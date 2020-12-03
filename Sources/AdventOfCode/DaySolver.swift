@@ -8,18 +8,21 @@ public protocol DaySolver {
     func solvePart2() -> String
 }
 
-protocol DaySolverWithInput: DaySolver {
-    associatedtype InputLine: ParseableFromString
-    init(inputLines: [InputLine]) throws
+protocol DaySolverWithInputs: DaySolver {
+    associatedtype InputElement: ParseableFromString
+    static var elementsSeparator: Character { get }
+    init(inputElements: [InputElement]) throws
 }
 
-extension DaySolverWithInput {
+extension DaySolverWithInputs {
     public init(input: String) throws {
         let inputLines = try input
-            .split(separator: "\n")
-            .map({ try InputLine.parse(from: String($0)) })
-        try self.init(inputLines: inputLines)
+            .split(separator: Self.elementsSeparator)
+            .map({ try InputElement.parse(from: String($0)) })
+        try self.init(inputElements: inputLines)
     }
+
+    public static var elementsSeparator: Character { "\n" }
 }
 
 // MARK: - ParseableFromString

@@ -1,13 +1,13 @@
 import Foundation
 
-public final class Day3Year2020: DaySolverWithInput {
+public final class Day3Year2020: DaySolverWithInputs {
     public static let day = 3
     public static let year = 2020
 
-    private let inputLines: [InputLine]
+    private let inputElements: [InputElement]
 
-    public init(inputLines: [InputLine]) {
-        self.inputLines = inputLines
+    public init(inputElements: [InputElement]) {
+        self.inputElements = inputElements
     }
 
     /*
@@ -101,7 +101,7 @@ public final class Day3Year2020: DaySolverWithInput {
 // MARK: - Input
 
 public extension Day3Year2020 {
-    struct InputLine {
+    struct InputElement {
         var squares: [Square]
 
         typealias Square = Day3Year2020.Square
@@ -113,7 +113,7 @@ public extension Day3Year2020 {
     }
 }
 
-extension Day3Year2020.InputLine: ParseableFromString {
+extension Day3Year2020.InputElement: ParseableFromString {
     public var description: String {
         squares
             .map(\.description)
@@ -136,7 +136,7 @@ extension Day3Year2020.Square: ParseableFromString {
 
 private extension Day3Year2020 {
     func numberOfTrees(slopeRight: Int, slopeDown: Int) -> Int {
-        let touchedLines = inputLines
+        let touchedLines = inputElements
             .enumerated()
             .filter({ $0.offset.isMultiple(of: slopeDown) })
             .map(\.element)

@@ -1,13 +1,13 @@
 import Foundation
 
-public final class Day2Year2020: DaySolverWithInput {
+public final class Day2Year2020: DaySolverWithInputs {
     public static let day = 2
     public static let year = 2020
 
-    private let inputLines: [InputLine]
+    private let inputElements: [InputLine]
 
-    public init(inputLines: [InputLine]) {
-        self.inputLines = inputLines
+    public init(inputElements: [InputLine]) {
+        self.inputElements = inputElements
     }
 
     /*
@@ -34,7 +34,7 @@ public final class Day2Year2020: DaySolverWithInput {
      How many passwords are valid according to their policies?
      */
     public func solvePart1() -> String {
-        inputLines
+        inputElements
             .count(where: \.isPasswordValidOnOldRules)
             .description
     }
@@ -56,7 +56,7 @@ public final class Day2Year2020: DaySolverWithInput {
      How many passwords are valid according to the new interpretation of the policies?
      */
     public func solvePart2() -> String {
-        inputLines
+        inputElements
             .count(where: \.isPasswordValidOnNewRules)
             .description
     }

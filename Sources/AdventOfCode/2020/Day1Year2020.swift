@@ -1,13 +1,13 @@
 import Algorithms
 
-public final class Day1Year2020: DaySolverWithInput {
+public final class Day1Year2020: DaySolverWithInputs {
     public static let day = 1
     public static let year = 2020
 
-    private let inputLines: [InputLine]
+    private let inputElements: [InputElement]
 
-    public init(inputLines: [InputLine]) {
-        self.inputLines = inputLines
+    public init(inputElements: [InputElement]) {
+        self.inputElements = inputElements
     }
 
     /*
@@ -60,16 +60,16 @@ public final class Day1Year2020: DaySolverWithInput {
 // MARK: - Input
 
 public extension Day1Year2020 {
-    typealias InputLine = Int
+    typealias InputElement = Int
 }
 
 // MARK: - Logic
 
 private extension Day1Year2020 {
     func productWhereSum(_ sum: Int = 2020, count: Int) -> Int? {
-        let lines = Set(inputLines)
-        let combinations = lines.combinations(ofCount: count - 1)
-        guard let combination = combinations.first(where: { lines.contains(sum - $0.sum()) }) else { return nil }
+        let elements = Set(inputElements)
+        let combinations = elements.combinations(ofCount: count - 1)
+        guard let combination = combinations.first(where: { elements.contains(sum - $0.sum()) }) else { return nil }
         return combination.product() * (sum - combination.sum())
     }
 }
