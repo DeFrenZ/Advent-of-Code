@@ -34,8 +34,9 @@ public final class Day2Year2020: DaySolverWithInput {
      How many passwords are valid according to their policies?
      */
     public func solvePart1() -> String {
-        let count = inputLines.count(where: \.isPasswordValidOnOldRules)
-        return "\(count)"
+        inputLines
+            .count(where: \.isPasswordValidOnOldRules)
+            .description
     }
 
     /*
@@ -55,10 +56,13 @@ public final class Day2Year2020: DaySolverWithInput {
      How many passwords are valid according to the new interpretation of the policies?
      */
     public func solvePart2() -> String {
-        let count = inputLines.count(where: \.isPasswordValidOnNewRules)
-        return "\(count)"
+        inputLines
+            .count(where: \.isPasswordValidOnNewRules)
+            .description
     }
 }
+
+// MARK: - Input
 
 public extension Day2Year2020 {
     struct InputLine {
@@ -87,7 +91,7 @@ extension Day2Year2020.InputLine: ParseableFromString {
         return Self(policy: policy, password: password)
     }
 
-    enum ParseError: Error {
+    public enum ParseError: Error {
         case onColonSpace
         case onPassword
     }
@@ -121,7 +125,9 @@ extension Day2Year2020.PasswordPolicy: ParseableFromString {
     }
 }
 
-extension String {
+// MARK: - Logic
+
+private extension String {
     func matchesPolicyOnOldRules(_ policy: Day2Year2020.PasswordPolicy) -> Bool {
         let characters = Dictionary(countingOccurrencesOf: self)
         let policyCharacterCount = characters[policy.character] ?? 0
@@ -136,7 +142,7 @@ extension String {
     }
 }
 
-extension Day2Year2020.InputLine {
+private extension Day2Year2020.InputLine {
     var isPasswordValidOnOldRules: Bool {
         password.matchesPolicyOnOldRules(policy)
     }

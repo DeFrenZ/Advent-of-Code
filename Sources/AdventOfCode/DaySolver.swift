@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol DaySolver {
-    init(lines: [Substring]) throws
+    init(input: String) throws
     static var day: Int { get }
     static var year: Int { get }
     func solvePart1() -> String
@@ -14,8 +14,10 @@ protocol DaySolverWithInput: DaySolver {
 }
 
 extension DaySolverWithInput {
-    public init(lines: [Substring]) throws {
-        let inputLines = try lines.map({ try InputLine.parse(from: String($0)) })
+    public init(input: String) throws {
+        let inputLines = try input
+            .split(separator: "\n")
+            .map({ try InputLine.parse(from: String($0)) })
         try self.init(inputLines: inputLines)
     }
 }
@@ -41,10 +43,51 @@ extension ParseableFromString {
     }
 }
 
+extension Sequence where Element: ParseableFromString {
+    var inputDescription: String {
+        map(\.description)
+            .joined(separator: "\n")
+    }
+}
+
 extension Int: ParseableFromString {
     static func parse(on scanner: Scanner) throws -> Int {
         var parsed: Int = 0
-        guard scanner.scanInt(&parsed) else { throw ParseError() }
+        guard scanner.scanInt(&parsed) else { throw ParseError.doesNotStartWithAnInt(scanner.remainingString) }
         return parsed
     }
+
+    enum ParseError: Error {
+        case doesNotStartWithAnInt(String)
+    }
+}
+
+extension ParseableFromString where Self: RawRepresentable, RawValue == Character {
+    static func parse(on scanner: Scanner) throws -> Self {
+        typealias ParseError = CharacterRawRepresentableParseError
+
+        guard let character = scanner.scanCharacter() else { throw ParseError.doesNotStartWithACharacter(scanner.remainingString) }
+        guard let parsed = Self(rawValue: character) else { throw ParseError.notAValidRawCharacter(character) }
+        return parsed
+    }
+}
+
+enum CharacterRawRepresentableParseError: Error {
+    case doesNotStartWithACharacter(String)
+    case notAValidRawCharacter(Character)
+}
+
+extension ParseableFromString where Self: RawRepresentable, RawValue == String {
+    static func parse(on scanner: Scanner) throws -> Self {
+        typealias ParseError = StringRawRepresentableParseError
+
+        guard let string = scanner.scanUpToString("\n") else { throw ParseError.doesNotStartWithAString(scanner.remainingString) }
+        guard let parsed = Self(rawValue: string) else { throw ParseError.notAValidRawString(string) }
+        return parsed
+    }
+}
+
+enum StringRawRepresentableParseError: Error {
+    case doesNotStartWithAString(String)
+    case notAValidRawString(String)
 }

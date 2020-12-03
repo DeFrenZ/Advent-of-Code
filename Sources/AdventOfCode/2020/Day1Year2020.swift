@@ -38,8 +38,8 @@ public final class Day1Year2020: DaySolverWithInput {
     Of course, your expense report is much larger. Find the two entries that sum to 2020; what do you get if you multiply them together?
      */
 	public func solvePart1() -> String {
-        let product = productWhereSum(count: 2)!
-		return "\(product)"
+        productWhereSum(count: 2)!
+            .description
 	}
 
     /*
@@ -52,14 +52,18 @@ public final class Day1Year2020: DaySolverWithInput {
     In your expense report, what is the product of the three entries that sum to 2020?
      */
 	public func solvePart2() -> String {
-        let product = productWhereSum(count: 3)!
-        return "\(product)"
+        productWhereSum(count: 3)!
+            .description
 	}
 }
+
+// MARK: - Input
 
 public extension Day1Year2020 {
     typealias InputLine = Int
 }
+
+// MARK: - Logic
 
 private extension Day1Year2020 {
     func productWhereSum(_ sum: Int = 2020, count: Int) -> Int? {

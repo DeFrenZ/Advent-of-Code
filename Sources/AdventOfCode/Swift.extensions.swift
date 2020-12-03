@@ -14,6 +14,20 @@ extension Collection {
     }
 }
 
+extension Collection {
+    public func index(atOffsetCycled offset: Int) -> Index? {
+        let cycleSize = distance(from: startIndex, to: endIndex)
+        guard cycleSize > 0 else { return nil }
+        let cycledOffset = offset % cycleSize
+        return index(atOffset: cycledOffset)
+    }
+
+    public subscript (offsetCycled offset: Int) -> Element? {
+        guard let index = index(atOffsetCycled: offset) else { return nil }
+        return self[index]
+    }
+}
+
 // MARK: - Dictionary
 
 extension Dictionary where Value == Int {
