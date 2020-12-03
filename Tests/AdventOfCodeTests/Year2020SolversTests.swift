@@ -1,7 +1,7 @@
 import XCTest
 import AdventOfCode
 
-final class DaySolutionsTests: XCTestCase {
+final class Year2020SolversTests: XCTestCase {
     func testDay1() throws {
         let sampleInput = """
             1721
@@ -41,34 +41,5 @@ final class DaySolutionsTests: XCTestCase {
             """
         try testDaySolver(Day3Year2020.self, input: sampleInput, part1Solution: "7", part2Solution: "336")
         try testDaySolver(Day3Year2020.self, part1Solution: "268", part2Solution: "3093068400")
-    }
-}
-
-extension DaySolutionsTests {
-    private func testDaySolver <Solver: DaySolver> (
-        _ solverType: Solver.Type,
-        input: String = input(year: Solver.year, day: Solver.day),
-        part1Solution: String? = nil,
-        part2Solution: String? = nil,
-        file: StaticString = #file,
-        line: UInt = #line)
-    throws {
-        let solver = try Solver(input: input)
-
-        if let part1Solution = part1Solution {
-            let part1ComputedSolution = solver.solvePart1()
-            XCTAssertEqual(part1ComputedSolution, part1Solution, "Solution of \(Solver.self),1 is incorrect", file: file, line: line)
-        }
-
-        if let part2Solution = part2Solution {
-            let part2ComputedSolution = solver.solvePart2()
-            XCTAssertEqual(part2ComputedSolution, part2Solution, "Solution of \(Solver.self),2 is incorrect", file: file, line: line)
-        }
-    }
-
-    private static func input(year: Int, day: Int) -> String {
-        let inputURL = Bundle.module.url(forResource: "\(year)-\(day)", withExtension: "txt")!
-        let input = try! String(contentsOf: inputURL, encoding: .utf8)
-        return input
     }
 }
