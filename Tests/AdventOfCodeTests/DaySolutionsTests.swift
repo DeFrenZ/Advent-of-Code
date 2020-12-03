@@ -4,6 +4,7 @@ import AdventOfCode
 final class DaySolutionsTests: XCTestCase {
     func testDay1() throws {
         try testDaySolver(Day1Year2020.self, part1Solution: "1010884", part2Solution: "253928438")
+        try testDaySolver(Day2Year2020.self, part1Solution: "393", part2Solution: "690")
     }
 
     private func testDaySolver <Solver: DaySolver> (
