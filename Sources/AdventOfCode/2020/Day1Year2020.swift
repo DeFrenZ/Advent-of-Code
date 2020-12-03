@@ -1,14 +1,14 @@
 import Algorithms
 
-public final class Day1Year2020: DaySolver {
+public final class Day1Year2020: DaySolverWithInput {
     public static let day = 1
     public static let year = 2020
 
-	private let entries: [Int]
-	
-    public init(lines: [Substring]) {
-        self.entries = lines.map({ Int($0)! })
-	}
+    private let inputLines: [InputLine]
+
+    public init(inputLines: [InputLine]) {
+        self.inputLines = inputLines
+    }
 
     /*
     --- Day 1: Report Repair ---
@@ -57,22 +57,14 @@ public final class Day1Year2020: DaySolver {
 	}
 }
 
+public extension Day1Year2020 {
+    typealias InputLine = Int
+}
+
 private extension Day1Year2020 {
     func productWhereSum(_ sum: Int = 2020, count: Int) -> Int? {
-        let combinations = entries.combinations(ofCount: count)
+        let combinations = inputLines.combinations(ofCount: count)
         guard let combination = combinations.first(where: { $0.sum() == sum }) else { return nil }
         return combination.product()
-    }
-}
-
-extension Sequence where Element: AdditiveArithmetic {
-    func sum() -> Element {
-        reduce(.zero, +)
-    }
-}
-
-extension Sequence where Element: Numeric {
-    func product() -> Element {
-        reduce(1, *)
     }
 }

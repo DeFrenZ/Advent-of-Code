@@ -3,7 +3,7 @@ import AdventOfCode
 
 final class DaySolutionsTests: XCTestCase {
     func testDay1() throws {
-        testDaySolver(Day1Year2020.self, part1Solution: "1010884", part2Solution: "253928438")
+        try testDaySolver(Day1Year2020.self, part1Solution: "1010884", part2Solution: "253928438")
     }
 
     private func testDaySolver <Solver: DaySolver> (
@@ -12,9 +12,9 @@ final class DaySolutionsTests: XCTestCase {
         part2Solution: String,
         file: StaticString = #file,
         line: UInt = #line)
-    {
+    throws {
         let lines = linesOfInput(year: Solver.year, day: Solver.day)
-        let solver = Solver(lines: lines)
+        let solver = try Solver(lines: lines)
 
         let part1ComputedSolution = solver.solvePart1()
         XCTAssertEqual(part1ComputedSolution, part1Solution, "Solution of \(Solver.self),1 is incorrect", file: file, line: line)

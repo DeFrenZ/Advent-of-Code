@@ -12,11 +12,3 @@ struct Advent: ParsableCommand {
 		
 	}
 }
-
-public protocol DaySolver {
-    static var day: Int { get }
-    static var year: Int { get }
-    init(lines: [Substring])
-    func solvePart1() -> String
-    func solvePart2() -> String
-}
