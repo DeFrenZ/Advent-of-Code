@@ -25,6 +25,25 @@ final class DaySolutionsTests: XCTestCase {
         try testDaySolver(Day2Year2020.self, part1Solution: "393", part2Solution: "690")
     }
 
+    func testDay3() throws {
+        let sampleInput = """
+            ..##.......
+            #...#...#..
+            .#....#..#.
+            ..#.#...#.#
+            .#...##..#.
+            ..#.##.....
+            .#.#.#....#
+            .#........#
+            #.##...#...
+            #...##....#
+            .#..#...#.#
+            """
+        try testDaySolver(Day3Year2020.self, input: sampleInput, part1Solution: "7", part2Solution: "336")
+        try testDaySolver(Day3Year2020.self, part1Solution: "268", part2Solution: "3093068400")
+    }
+}
+
 extension DaySolutionsTests {
     private func testDaySolver <Solver: DaySolver> (
         _ solverType: Solver.Type,
