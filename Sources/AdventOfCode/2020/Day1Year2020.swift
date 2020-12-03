@@ -67,8 +67,9 @@ public extension Day1Year2020 {
 
 private extension Day1Year2020 {
     func productWhereSum(_ sum: Int = 2020, count: Int) -> Int? {
-        let combinations = inputLines.combinations(ofCount: count)
-        guard let combination = combinations.first(where: { $0.sum() == sum }) else { return nil }
-        return combination.product()
+        let lines = Set(inputLines)
+        let combinations = lines.combinations(ofCount: count - 1)
+        guard let combination = combinations.first(where: { lines.contains(sum - $0.sum()) }) else { return nil }
+        return combination.product() * (sum - combination.sum())
     }
 }
