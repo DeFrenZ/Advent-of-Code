@@ -122,6 +122,7 @@ extension Day3Year2020.InputElement: ParseableFromString {
 
     public static func parse(on scanner: Scanner) throws -> Self {
         let squares = try scanner.scanAll(Square.self)
+
         return Self(squares: squares)
     }
 }

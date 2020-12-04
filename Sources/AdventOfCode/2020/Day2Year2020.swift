@@ -4,9 +4,9 @@ public final class Day2Year2020: DaySolverWithInputs {
     public static let day = 2
     public static let year = 2020
 
-    private let inputElements: [InputLine]
+    private let inputElements: [InputElement]
 
-    public init(inputElements: [InputLine]) {
+    public init(inputElements: [InputElement]) {
         self.inputElements = inputElements
     }
 
@@ -65,7 +65,7 @@ public final class Day2Year2020: DaySolverWithInputs {
 // MARK: - Input
 
 public extension Day2Year2020 {
-    struct InputLine {
+    struct InputElement {
         var policy: PasswordPolicy
         var password: String
 
@@ -78,7 +78,7 @@ public extension Day2Year2020 {
     }
 }
 
-extension Day2Year2020.InputLine: ParseableFromString {
+extension Day2Year2020.InputElement: ParseableFromString {
     public var description: String {
         "\(policy): \(password)"
     }
@@ -142,7 +142,7 @@ private extension String {
     }
 }
 
-private extension Day2Year2020.InputLine {
+private extension Day2Year2020.InputElement {
     var isPasswordValidOnOldRules: Bool {
         password.matchesPolicyOnOldRules(policy)
     }
