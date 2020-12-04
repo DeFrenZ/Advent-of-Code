@@ -11,6 +11,12 @@ public func memoized <Input: Hashable, Output> (_ operation: @escaping (Input) -
     }
 }
 
+public func updated <T> (_ value: T, with update: (inout T) -> Void) -> T {
+    var mutable = value
+    update(&mutable)
+    return mutable
+}
+
 infix operator ?!: NilCoalescingPrecedence
 
 public func ?! <T> (_ lhs: T?, _ rhs: Error) throws -> T {

@@ -104,3 +104,22 @@ public enum StringRawRepresentableParseError: Error {
     case doesNotStartWithAString(String)
     case notAValidRawString(String)
 }
+
+extension ParseableFromString where Self: RawRepresentable, RawValue == Int {
+    public var description: String {
+        rawValue.description
+    }
+
+    public static func parse(on scanner: Scanner) throws -> Self {
+        typealias ParseError = IntRawRepresentableParseError
+
+        guard let int = scanner.scanInt() else { throw ParseError.doesNotStartWithAnInt(scanner.remainingString) }
+        guard let parsed = Self(rawValue: int) else { throw ParseError.notAValidRawInt(int) }
+        return parsed
+    }
+}
+
+public enum IntRawRepresentableParseError: Error {
+    case doesNotStartWithAnInt(String)
+    case notAValidRawInt(Int)
+}
