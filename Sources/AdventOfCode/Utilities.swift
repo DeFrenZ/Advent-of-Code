@@ -10,3 +10,10 @@ public func memoized <Input: Hashable, Output> (_ operation: @escaping (Input) -
         return output
     }
 }
+
+infix operator ?!: NilCoalescingPrecedence
+
+public func ?! <T> (_ lhs: T?, _ rhs: Error) throws -> T {
+    guard let value = lhs else { throw rhs }
+    return value
+}

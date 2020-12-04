@@ -1,3 +1,11 @@
+// MARK: - Bool
+
+extension Bool {
+    public var not: Self {
+        !self
+    }
+}
+
 // MARK: - Collection
 
 extension Collection {
@@ -60,5 +68,11 @@ extension Sequence {
             count += 1
         }
         return count
+    }
+}
+
+extension Sequence {
+    public func compacted <T> () -> [T] where Element == T? {
+        compactMap({ $0 })
     }
 }

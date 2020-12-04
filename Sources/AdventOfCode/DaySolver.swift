@@ -10,24 +10,26 @@ public protocol DaySolver {
 
 protocol DaySolverWithInputs: DaySolver {
     associatedtype InputElement: ParseableFromString
-    static var elementsSeparator: Character { get }
+    static var elementsSeparator: String { get }
     init(inputElements: [InputElement]) throws
 }
 
 extension DaySolverWithInputs {
     public init(input: String) throws {
-        let inputLines = try input
-            .split(separator: Self.elementsSeparator)
+        let entries = input
+            .components(separatedBy: Self.elementsSeparator)
+            .filter(\.isEmpty.not)
+        let inputElements = try entries
             .map({ try InputElement.parse(from: String($0)) })
-        try self.init(inputElements: inputLines)
+        try self.init(inputElements: inputElements)
     }
 
-    public static var elementsSeparator: Character { "\n" }
+    public static var elementsSeparator: String { "\n" }
 }
 
 // MARK: - ParseableFromString
 
-protocol ParseableFromString: LosslessStringConvertible {
+public protocol ParseableFromString: LosslessStringConvertible {
     static func parse(on scanner: Scanner) throws -> Self
 }
 
@@ -39,7 +41,7 @@ extension ParseableFromString {
         self = parsed
     }
 
-    static func parse(from string: String) throws -> Self {
+    public static func parse(from string: String) throws -> Self {
         let scanner = Scanner(string: string)
         scanner.charactersToBeSkipped = nil
         return try Self.parse(on: scanner)
@@ -54,19 +56,23 @@ extension Sequence where Element: ParseableFromString {
 }
 
 extension Int: ParseableFromString {
-    static func parse(on scanner: Scanner) throws -> Int {
+    public static func parse(on scanner: Scanner) throws -> Int {
         var parsed: Int = 0
         guard scanner.scanInt(&parsed) else { throw ParseError.doesNotStartWithAnInt(scanner.remainingString) }
         return parsed
     }
 
-    enum ParseError: Error {
+    public enum ParseError: Error {
         case doesNotStartWithAnInt(String)
     }
 }
 
 extension ParseableFromString where Self: RawRepresentable, RawValue == Character {
-    static func parse(on scanner: Scanner) throws -> Self {
+    public var description: String {
+        String(rawValue)
+    }
+
+    public static func parse(on scanner: Scanner) throws -> Self {
         typealias ParseError = CharacterRawRepresentableParseError
 
         guard let character = scanner.scanCharacter() else { throw ParseError.doesNotStartWithACharacter(scanner.remainingString) }
@@ -75,13 +81,17 @@ extension ParseableFromString where Self: RawRepresentable, RawValue == Characte
     }
 }
 
-enum CharacterRawRepresentableParseError: Error {
+public enum CharacterRawRepresentableParseError: Error {
     case doesNotStartWithACharacter(String)
     case notAValidRawCharacter(Character)
 }
 
 extension ParseableFromString where Self: RawRepresentable, RawValue == String {
-    static func parse(on scanner: Scanner) throws -> Self {
+    public var description: String {
+        String(rawValue)
+    }
+
+    public static func parse(on scanner: Scanner) throws -> Self {
         typealias ParseError = StringRawRepresentableParseError
 
         guard let string = scanner.scanUpToString("\n") else { throw ParseError.doesNotStartWithAString(scanner.remainingString) }
@@ -90,7 +100,7 @@ extension ParseableFromString where Self: RawRepresentable, RawValue == String {
     }
 }
 
-enum StringRawRepresentableParseError: Error {
+public enum StringRawRepresentableParseError: Error {
     case doesNotStartWithAString(String)
     case notAValidRawString(String)
 }

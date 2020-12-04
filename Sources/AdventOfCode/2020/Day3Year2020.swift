@@ -127,11 +127,7 @@ extension Day3Year2020.InputElement: ParseableFromString {
     }
 }
 
-extension Day3Year2020.Square: ParseableFromString {
-    public var description: String {
-        String(rawValue)
-    }
-}
+extension Day3Year2020.Square: ParseableFromString {}
 
 // MARK: - Logic
 
