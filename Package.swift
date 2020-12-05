@@ -22,9 +22,7 @@ let package = Package(
             ]),
         .testTarget(
             name: "AdventOfCodeTests",
-            dependencies: [
-                "AdventOfCode"
-            ],
+            dependencies: ["AdventOfCode"],
             resources: [
                 .process("Input"),
             ]),
