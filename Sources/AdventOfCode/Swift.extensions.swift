@@ -1,3 +1,5 @@
+import Algorithms
+
 // MARK: - Bool
 
 extension Bool {
@@ -33,6 +35,18 @@ extension Collection {
     public subscript (offsetCycled offset: Int) -> Element? {
         guard let index = index(atOffsetCycled: offset) else { return nil }
         return self[index]
+    }
+}
+
+extension Collection {
+    public func pairs() -> [(Element, Element)] {
+        combinations(ofCount: 2)
+            .map({ ($0[0], $0[1]) })
+    }
+
+    public func trios() -> [(Element, Element, Element)] {
+        combinations(ofCount: 3)
+            .map({ ($0[0], $0[1], $0[2]) })
     }
 }
 

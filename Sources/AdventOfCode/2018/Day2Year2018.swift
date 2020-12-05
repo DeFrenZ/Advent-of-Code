@@ -67,8 +67,7 @@ public final class Day2Year2018: DaySolverWithInputs {
      */
     public func solvePart2() -> String {
         let pair = inputElements
-            .combinations(ofCount: 2)
-            .map({ ($0[0], $0[1]) })
+            .pairs()
             .lazy
             .first(where: { Self.manhattanDistance($0.0, $0.1) == 1 })!
         let result = zip(pair.0, pair.1)
