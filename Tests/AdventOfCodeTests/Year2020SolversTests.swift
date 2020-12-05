@@ -113,4 +113,13 @@ final class Year2020SolversTests: XCTestCase {
 
         try testDaySolver(Day4Year2020.self, part1Solution: "233", part2Solution: "111")
     }
+
+    func testDay5() throws {
+        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "FBFBBFFRLR").id, 357)
+        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "BFFFBBFRRR").id, 567)
+        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "FFFBBBFRRR").id, 119)
+        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "BBFFBBFRLL").id, 820)
+
+        try testDaySolver(Day5Year2020.self, part1Solution: "822", part2Solution: "705")
+    }
 }

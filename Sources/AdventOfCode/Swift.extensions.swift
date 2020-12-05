@@ -108,3 +108,9 @@ extension Sequence {
         }
     }
 }
+
+extension Sequence {
+    public func max <T: Comparable> (on transform: (Element) throws -> T) rethrows -> Element? {
+        try self.max(by: { try transform($0) < transform($1) })
+    }
+}
