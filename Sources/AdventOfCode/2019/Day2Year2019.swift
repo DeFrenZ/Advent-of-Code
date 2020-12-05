@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Davide De Franceschi on 04/12/2020.
-//
-
 import Foundation
 import Algorithms
 
