@@ -33,4 +33,15 @@ final class Year2018SolversTests: XCTestCase {
 
         try testDaySolver(Day2Year2018.self, part1Solution: "6474", part2Solution: "mxhwoglxgeauywfkztndcvjqr")
     }
+
+    func testDay3() throws {
+        let sampleInput = """
+            #1 @ 1,3: 4x4
+            #2 @ 3,1: 4x4
+            #3 @ 5,5: 2x2
+            """
+        try testDaySolver(Day3Year2018.self, input: sampleInput, part1Solution: "4", part2Solution: "3")
+
+        try testDaySolver(Day3Year2018.self, part1Solution: "107663", part2Solution: "1166")
+    }
 }
