@@ -73,12 +73,10 @@ public final class Day5Year2020: DaySolverWithInputs {
      */
     public func solvePart2() -> String {
         let takenSeatsIDs = Set(inputElements.map(\.id))
-        let openSeatsIDs = Set(0 ..< 1 << 10)
+        let openSeatsIDs = Set(0 ..< Seat.maxID)
             .subtracting(takenSeatsIDs)
         let seatID = openSeatsIDs
-            .sorted()
-            .dropFirst()
-            .dropLast()
+            .subtracting([0, .max])
             .first(where: { takenSeatsIDs.contains($0 - 1) && takenSeatsIDs.contains($0 + 1) })!
         return seatID.description
     }
@@ -89,6 +87,8 @@ public final class Day5Year2020: DaySolverWithInputs {
 public extension Day5Year2020 {
     struct Seat: Hashable {
         public let id: UInt16 // Should be `UInt10`
+
+        public static let maxID: UInt16 = 1 << 10
     }
 
     typealias InputElement = Seat
@@ -155,9 +155,4 @@ extension Day5Year2020.Seat: ParseableFromString {
             }
         }
     }
-}
-
-// MARK: - Logic
-
-private extension Day5Year2020 {
 }
