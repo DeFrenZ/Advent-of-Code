@@ -76,3 +76,21 @@ extension Sequence {
         compactMap({ $0 })
     }
 }
+
+extension Sequence {
+    public func scan <Result> (_ initialResult: Result, nextResult: @escaping (Result, Element) -> Result) -> AnyIterator<Result> {
+        var currentResult: Result = initialResult
+        var didPublishInitialResult = false
+        var baseIterator = self.makeIterator()
+        return AnyIterator<Result> {
+            guard didPublishInitialResult else {
+                didPublishInitialResult = true
+                return initialResult
+            }
+
+            guard let nextElement = baseIterator.next() else { return nil }
+            currentResult = nextResult(currentResult, nextElement)
+            return currentResult
+        }
+    }
+}
