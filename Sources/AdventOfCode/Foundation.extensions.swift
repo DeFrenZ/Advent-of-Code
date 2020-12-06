@@ -7,6 +7,10 @@ extension Scanner {
         String(string[currentIndex...])
     }
 
+    func peekUnicodeScalar() -> UnicodeScalar? {
+        remainingString.unicodeScalars.first
+    }
+
     public func scanUInt16(representation: NumberRepresentation) -> UInt16? {
         let parseEndIndex = string.index(currentIndex, offsetBy: 2)
         guard parseEndIndex <= string.endIndex else { return nil }
@@ -22,10 +26,17 @@ extension Scanner {
         try P.parse(on: self)
     }
 
-    func scanAll <P: ParseableFromString> (_ type: P.Type) throws -> [P] {
+    func scanAll <P: ParseableFromString> (
+        _ type: P.Type,
+        separators: CharacterSet = .init(),
+        stopAt terminators: CharacterSet = .newlines
+    ) throws -> [P] {
         var parsed: [P] = []
-        while !isAtEnd {
+        while !isAtEnd, peekUnicodeScalar().map(terminators.contains) != true {
             try parsed.append(scan(P.self))
+            if peekUnicodeScalar().map(separators.contains) == true {
+                _ = scanCharacter()
+            }
         }
         return parsed
     }

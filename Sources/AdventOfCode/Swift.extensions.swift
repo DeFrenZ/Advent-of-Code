@@ -83,15 +83,7 @@ extension Sequence {
         }
         return count
     }
-}
 
-extension Sequence {
-    public func compacted <T> () -> [T] where Element == T? {
-        compactMap({ $0 })
-    }
-}
-
-extension Sequence {
     public func scan <Result> (_ initialResult: Result, nextResult: @escaping (Result, Element) -> Result) -> AnyIterator<Result> {
         var currentResult: Result = initialResult
         var didPublishInitialResult = false
@@ -107,9 +99,15 @@ extension Sequence {
             return currentResult
         }
     }
-}
 
-extension Sequence {
+    public func asArray() -> [Element] {
+        map({ $0 })
+    }
+
+    public func compacted <T> () -> [T] where Element == T? {
+        compactMap({ $0 })
+    }
+
     public func max <T: Comparable> (on transform: (Element) throws -> T) rethrows -> Element? {
         try self.max(by: { try transform($0) < transform($1) })
     }

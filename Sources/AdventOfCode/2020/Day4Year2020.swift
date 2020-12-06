@@ -201,7 +201,7 @@ extension Day4Year2020.InputElement: ParseableFromString {
     }
 
     public static func parse(on scanner: Scanner) throws -> Self {
-        let pairs = try scanner.scanAll(KeyValuePair.self)
+        let pairs = try scanner.scanAll(KeyValuePair.self, separators: .whitespacesAndNewlines)
 
         return Self(keyValuePairs: pairs)
     }
@@ -216,13 +216,10 @@ extension Day4Year2020.KeyValuePair: ParseableFromString {
         let keyString = try scanner.scanUpToString(":") ?! ParseError.onKey(scanner.remainingString)
         let key = try Key(rawValue: keyString) ?! ParseError.notAValidKey(keyString)
         _ = try scanner.scanString(":") ?! ParseError.onColon(scanner.remainingString)
-        let value = try scanner.scanUpToCharacters(from: Self.keyValuePairSeparators) ?! ParseError.onValue(scanner.remainingString)
-        _ = scanner.scanCharacters(from: Self.keyValuePairSeparators)
+        let value = try scanner.scanUpToCharacters(from: .whitespacesAndNewlines) ?! ParseError.onValue(scanner.remainingString)
 
         return Self(key: key, value: value)
     }
-
-    private static let keyValuePairSeparators: CharacterSet = .init(charactersIn: " \n")
 
     enum ParseError: Error {
         case onKey(String)
