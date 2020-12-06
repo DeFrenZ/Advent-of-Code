@@ -122,4 +122,34 @@ final class Year2020SolversTests: XCTestCase {
 
         try testDaySolver(Day5Year2020.self, part1Solution: "822", part2Solution: "705")
     }
+
+    func testDay6() throws {
+        let sampleInput = """
+            abcx
+            abcy
+            abcz
+            """
+        try testDaySolver(Day6Year2020.self, input: sampleInput, part1Solution: "6")
+
+        let sampleInput2 = """
+            abc
+
+            a
+            b
+            c
+
+            ab
+            ac
+
+            a
+            a
+            a
+            a
+
+            b
+            """
+        try testDaySolver(Day6Year2020.self, input: sampleInput2, part1Solution: "11", part2Solution: "6")
+
+        try testDaySolver(Day6Year2020.self, part1Solution: "6763", part2Solution: "3512")
+    }
 }
