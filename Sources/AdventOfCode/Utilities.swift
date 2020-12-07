@@ -1,3 +1,24 @@
+// MARK: - Memoization
+
+/// Memoize a function that calls itself recursively.
+///
+/// This cannot be caught from the outside, so the function needs to accept a "continuation" argument, and then a concrete implementation will call that by passing it again as the continuation.
+/// Example:
+/// ```
+/// func fibonacci(_ n: Int, continuation: (Int) -> Int) -> Int {
+///     guard n > 0 else { return 0 }
+///     if n == 1 { return 1 }
+///     return continuation(n - 2) + continuation(n - 1)
+/// }
+///
+/// func fibonacci(_ n: Int) -> Int {
+///     let fibonacciMemoized = memoized({ continuation in
+///         { input in fibonacci(input, continuation) }
+///     })
+///     return fibonacciMemoized(n)
+/// }
+/// ```
+/// Note: in the example above every call to `fibonacci(_:)` will have its own memoization cache
 public func memoized <Input: Hashable, Output> (
     _ operation: @escaping (_ continuation: @escaping (Input) -> Output) -> (Input) -> Output)
 -> (Input) -> Output {
@@ -30,11 +51,15 @@ public func memoized <InputA: Hashable, InputB: Hashable, Output> (
     return fromPairArgument(pairMemoized)
 }
 
+// MARK: - Update
+
 public func updated <T> (_ value: T, with update: (inout T) -> Void) -> T {
     var mutable = value
     update(&mutable)
     return mutable
 }
+
+// MARK: - Unwrap or Throw
 
 infix operator ?!: NilCoalescingPrecedence
 
