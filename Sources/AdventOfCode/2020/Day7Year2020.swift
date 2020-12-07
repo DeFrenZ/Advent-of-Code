@@ -1,4 +1,5 @@
 import Foundation
+import SwiftGraph
 
 public final class Day7Year2020: DaySolverWithInputs {
     public static let day = 7
@@ -45,15 +46,43 @@ public final class Day7Year2020: DaySolverWithInputs {
      How many bag colors can eventually contain at least one shiny gold bag? (The list of rules is quite long; make sure you get all of it.)
      */
     public func solvePart1() -> String {
-        0
+        bagsContaining(.shinyGold)
+            .count
             .description
     }
 
     /*
+     --- Part Two ---
 
+     It's getting pretty expensive to fly these days - not because of ticket prices, but because of the ridiculous number of bags you need to buy!
+
+     Consider again your shiny gold bag and the rules from the above example:
+
+     faded blue bags contain 0 other bags.
+     dotted black bags contain 0 other bags.
+     vibrant plum bags contain 11 other bags: 5 faded blue bags and 6 dotted black bags.
+     dark olive bags contain 7 other bags: 3 faded blue bags and 4 dotted black bags.
+
+     So, a single shiny gold bag must contain 1 dark olive bag (and the 7 bags within it) plus 2 vibrant plum bags (and the 11 bags within each of those): 1 + 1*7 + 2 + 2*11 = 32 bags!
+
+     Of course, the actual rules have a small chance of going several levels deeper than this example; be sure to count all of the bags, even if the nesting becomes topologically impractical!
+
+     Here's another example:
+
+     shiny gold bags contain 2 dark red bags.
+     dark red bags contain 2 dark orange bags.
+     dark orange bags contain 2 dark yellow bags.
+     dark yellow bags contain 2 dark green bags.
+     dark green bags contain 2 dark blue bags.
+     dark blue bags contain 2 dark violet bags.
+     dark violet bags contain no other bags.
+
+     In this example, a single shiny gold bag must contain 126 other bags.
+
+     How many individual bags are required inside your single shiny gold bag?
      */
     public func solvePart2() -> String {
-        0
+        bagsContainedCount(in: .shinyGold)
             .description
     }
 }
@@ -71,6 +100,8 @@ public extension Day7Year2020 {
 
     struct BagColor: Hashable {
         var colorName: String
+
+        static let shinyGold: Self = .init(colorName: "shiny gold")
     }
 
     struct BagColorCountPair {
@@ -159,3 +190,76 @@ extension Day7Year2020.BagColorCountPair: ParseableFromString {
         case noPlural(String)
     }
 }
+
+// MARK: - Logic
+
+private extension Day7Year2020 {
+    private var containedBags: WeightedGraph<BagColor, Int> {
+        let graph = WeightedGraph<BagColor, Int>(vertices: inputElements.map(\.bagColor))
+        for rule in inputElements {
+            for (containedBag, count) in rule.containedBags {
+                graph.addEdge(
+                    from: rule.bagColor,
+                    to: containedBag,
+                    weight: count,
+                    directed: true)
+            }
+        }
+        return graph
+    }
+
+    func bagsContaining(_ bagColor: BagColor) -> Set<BagColor> {
+        let bags = containedBags
+        let bagContainsMemoized = memoized({ continuation in
+            { parent, target in
+                Self.bagContainsRecursively(
+                    parentBagColor: parent,
+                    targetBagColor: target,
+                    containedBags: bags,
+                    contains: continuation)
+            }
+        })
+
+        return bags.vertices
+            .filter({ bagContainsMemoized($0, bagColor) })
+            .toSet()
+    }
+
+    private static func bagContainsRecursively(
+        parentBagColor: BagColor,
+        targetBagColor: BagColor,
+        containedBags: WeightedGraph<BagColor, Int>,
+        contains: (BagColor, BagColor) -> Bool)
+    -> Bool {
+        guard let neighbors = containedBags.neighborsForVertex(parentBagColor) else { return false }
+        if neighbors.contains(targetBagColor) { return true }
+        return neighbors.contains(where: { contains($0, targetBagColor) })
+    }
+
+    func bagsContainedCount(in bagColor: BagColor) -> Int {
+        let bags = containedBags
+        let bagsContainedCountMemoized = memoized({ continuation in
+            { parent in
+                Self.bagsContainedCountRecursively(
+                    parentBagColor: parent,
+                    containedBags: bags,
+                    count: continuation)
+            }
+        })
+
+        return bagsContainedCountMemoized(bagColor)
+    }
+
+    private static func bagsContainedCountRecursively(
+        parentBagColor: BagColor,
+        containedBags: WeightedGraph<BagColor, Int>,
+        count: (BagColor) -> Int)
+    -> Int {
+        guard let edges = containedBags.edgesForVertex(parentBagColor) else { return 0 }
+        return edges
+            .map({ edge in edge.weight * (1 + count(containedBags.vertexAtIndex(edge.v))) })
+            .sum()
+    }
+}
+
+extension Day7Year2020.BagColor: Codable {}
