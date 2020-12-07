@@ -111,6 +111,10 @@ extension Sequence {
     public func max <T: Comparable> (on transform: (Element) throws -> T) rethrows -> Element? {
         try self.max(by: { try transform($0) < transform($1) })
     }
+
+    public func sorted <T: Comparable> (on transform: (Element) throws -> T) rethrows -> [Element] {
+        try self.sorted(by: { try transform($0) < transform($1) })
+    }
 }
 
 extension Sequence where Element: Hashable {
