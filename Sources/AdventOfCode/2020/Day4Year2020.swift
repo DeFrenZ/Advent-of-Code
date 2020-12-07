@@ -201,7 +201,7 @@ extension Day4Year2020.InputElement: ParseableFromString {
     }
 
     public static func parse(on scanner: Scanner) throws -> Self {
-        let pairs = try scanner.scanAll(KeyValuePair.self, separators: .whitespacesAndNewlines)
+        let pairs = try scanner.scanAll(KeyValuePair.self, separators: [" ", "\n"])
 
         return Self(keyValuePairs: pairs)
     }

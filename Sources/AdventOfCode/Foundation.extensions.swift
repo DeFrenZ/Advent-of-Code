@@ -28,14 +28,14 @@ extension Scanner {
 
     func scanAll <P: ParseableFromString> (
         _ type: P.Type,
-        separators: CharacterSet = .init(),
+        separators: Set<String> = [],
         stopAt terminators: CharacterSet = .newlines
     ) throws -> [P] {
         var parsed: [P] = []
         while !isAtEnd, peekUnicodeScalar().map(terminators.contains) != true {
             try parsed.append(scan(P.self))
-            if peekUnicodeScalar().map(separators.contains) == true {
-                _ = scanCharacter()
+            if let separator = separators.first(where: { remainingString.hasPrefix($0) }) {
+                _ = scanString(separator)
             }
         }
         return parsed

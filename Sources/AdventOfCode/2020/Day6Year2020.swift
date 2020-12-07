@@ -171,7 +171,7 @@ extension Day6Year2020.GroupAnswers: ParseableFromString {
     }
 
     public static func parse(on scanner: Scanner) throws -> Self {
-        let answers = try scanner.scanAll(PersonAnswers.self, separators: .newlines)
+        let answers = try scanner.scanAll(PersonAnswers.self, separators: ["\n"])
         return Self(personsAnswers: answers)
     }
 }
