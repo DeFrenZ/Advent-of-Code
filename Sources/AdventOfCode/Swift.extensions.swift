@@ -100,7 +100,7 @@ extension Sequence {
         }
     }
 
-    public func asArray() -> [Element] {
+    public func toArray() -> [Element] {
         map({ $0 })
     }
 
@@ -110,5 +110,11 @@ extension Sequence {
 
     public func max <T: Comparable> (on transform: (Element) throws -> T) rethrows -> Element? {
         try self.max(by: { try transform($0) < transform($1) })
+    }
+}
+
+extension Sequence where Element: Hashable {
+    public func toSet() -> Set<Element> {
+        Set(self)
     }
 }
