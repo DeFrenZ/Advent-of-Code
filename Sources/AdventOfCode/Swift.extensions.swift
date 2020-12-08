@@ -104,6 +104,10 @@ extension Sequence {
         map({ $0 })
     }
 
+    public func eraseToAnySequence() -> AnySequence<Element> {
+        AnySequence(self)
+    }
+
     public func compacted <T> () -> [T] where Element == T? {
         compactMap({ $0 })
     }
