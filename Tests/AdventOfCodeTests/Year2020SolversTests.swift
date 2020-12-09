@@ -197,4 +197,50 @@ final class Year2020SolversTests: XCTestCase {
 
         try testDaySolver(Day8Year2020.self, part1Solution: "1749", part2Solution: "515")
     }
+
+    func testDay9() throws {
+        let samplePreamble = (1 ... 25).shuffled()
+        XCTAssertTrue(Day9Year2020.isNumberValid(26, inPreamble: samplePreamble[...]))
+        XCTAssertTrue(Day9Year2020.isNumberValid(49, inPreamble: samplePreamble[...]))
+        XCTAssertFalse(Day9Year2020.isNumberValid(100, inPreamble: samplePreamble[...]))
+        XCTAssertFalse(Day9Year2020.isNumberValid(50, inPreamble: samplePreamble[...]))
+
+        let samplePreamble2 = updated(samplePreamble) {
+            let index = $0.firstIndex(of: 20)!
+            $0.remove(at: index)
+            $0.append(45)
+        }
+        XCTAssertTrue(Day9Year2020.isNumberValid(26, inPreamble: samplePreamble2[...]))
+        XCTAssertFalse(Day9Year2020.isNumberValid(65, inPreamble: samplePreamble2[...]))
+        XCTAssertTrue(Day9Year2020.isNumberValid(64, inPreamble: samplePreamble2[...]))
+        XCTAssertTrue(Day9Year2020.isNumberValid(66, inPreamble: samplePreamble2[...]))
+
+        let sampleInput = """
+            35
+            20
+            15
+            25
+            47
+            40
+            62
+            55
+            65
+            95
+            102
+            117
+            150
+            182
+            127
+            219
+            299
+            277
+            309
+            576
+            """
+        let parsedSampleInput = try Day9Year2020.parseInputElements(input: sampleInput)
+        XCTAssertEqual(Day9Year2020.firstInvalidXMASNumber(in: parsedSampleInput, preambleLength: 5), 127)
+        XCTAssertEqual(Day9Year2020.xmasEncryptionWeakness(forNumber: 127, in: parsedSampleInput), 62)
+
+        try testDaySolver(Day9Year2020.self, part1Solution: "776203571", part2Solution: "104800569")
+    }
 }

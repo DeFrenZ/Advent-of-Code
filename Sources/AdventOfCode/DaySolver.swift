@@ -25,7 +25,7 @@ enum DaySolverError: Swift.Error {
 
 // MARK: - DaySolverWithInputs
 
-protocol DaySolverWithInputs: DaySolver {
+public protocol DaySolverWithInputs: DaySolver {
     associatedtype InputElement: ParseableFromString
     static var elementsSeparator: String { get }
     init(inputElements: [InputElement]) throws
@@ -33,12 +33,17 @@ protocol DaySolverWithInputs: DaySolver {
 
 extension DaySolverWithInputs {
     public init(input: String) throws {
+        let inputElements = try Self.parseInputElements(input: input)
+        try self.init(inputElements: inputElements)
+    }
+
+    public static func parseInputElements(input: String) throws -> [InputElement] {
         let entries = input
             .components(separatedBy: Self.elementsSeparator)
             .filter(\.isEmpty.not)
         let inputElements = try entries
             .map({ try InputElement.parse(from: String($0)) })
-        try self.init(inputElements: inputElements)
+        return inputElements
     }
 
     public static var elementsSeparator: String { "\n" }
