@@ -297,4 +297,22 @@ final class Year2020SolversTests: XCTestCase {
 
         try testDaySolver(Day10Year2020.self, part1Solution: "2432", part2Solution: "453551299002368")
     }
+
+    func testDay11() throws {
+        let sampleInput = """
+            L.LL.LL.LL
+            LLLLLLL.LL
+            L.L.L..L..
+            LLLL.LL.LL
+            L.LL.LL.LL
+            L.LLLLL.LL
+            ..L.L.....
+            LLLLLLLLLL
+            L.LLLLLL.L
+            L.LLLLL.LL
+            """
+        try testDaySolver(Day11Year2020.self, input: sampleInput, part1Solution: "37", part2Solution: "26")
+
+        try testDaySolver(Day11Year2020.self, part1Solution: "2470", part2Solution: "?")
+    }
 }

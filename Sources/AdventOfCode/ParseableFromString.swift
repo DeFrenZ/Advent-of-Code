@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol ParseableFromString: LosslessStringConvertible {
+public protocol ParseableFromString {
     static func parse(on scanner: Scanner) throws -> Self
 }
 
@@ -17,7 +17,7 @@ extension ParseableFromString {
     }
 }
 
-extension Sequence where Element: ParseableFromString {
+extension Sequence where Element: CustomStringConvertible, Element: ParseableFromString {
     var inputDescription: String {
         map(\.description)
             .joined(separator: "\n")
@@ -76,6 +76,12 @@ extension Int: ParseableFromString {
 
     public enum ParseError: Error {
         case doesNotStartWithAnInt(String)
+    }
+}
+
+extension Array: ParseableFromString where Element: ParseableFromString {
+    public static func parse(on scanner: Scanner) throws -> Self {
+        try scanner.scanAll(Element.self)
     }
 }
 

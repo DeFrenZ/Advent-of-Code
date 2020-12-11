@@ -112,6 +112,10 @@ extension Sequence {
         compactMap({ $0 })
     }
 
+    public func flattened <T> () -> [T] where Element == [T] {
+        flatMap({ $0 })
+    }
+
     public func max <T: Comparable> (on transform: (Element) throws -> T) rethrows -> Element? {
         try self.max(by: { try transform($0) < transform($1) })
     }
@@ -136,6 +140,12 @@ extension Sequence {
             .lazy
             .map({ ($1, $0) })
             .eraseToAnySequence()
+    }
+}
+
+extension Sequence where Element: Equatable {
+    public func count(occurrencesOf element: Element) -> Int {
+        count(where: { $0 == element })
     }
 }
 
