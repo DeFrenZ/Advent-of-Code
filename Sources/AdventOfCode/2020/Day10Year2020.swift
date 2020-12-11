@@ -196,7 +196,9 @@ extension Day10Year2020.Adapter: ParseableFromString {}
 private extension Day10Year2020 {
     func joltageDifferences() -> [Int] {
         let joltages = Self.sortedAdaptersIncludingOutletAndBuiltIn(inputElements)
-        return zip(joltages.dropFirst(), joltages).map({ $0.rawValue - $1.rawValue })
+        return joltages
+            .withPrevious()
+            .map({ $0.rawValue - $1.rawValue })
     }
 
     func joltageDifferencesDistribution() -> [Int: Int] {
@@ -222,7 +224,8 @@ private extension Day10Year2020 {
 
     static func countOfPaths(in graph: UnweightedGraph<Adapter>) -> Int {
         let checkpoints = self.checkpoints(in: graph)
-        let pathsCounts = zip(checkpoints, checkpoints.dropFirst())
+        let pathsCounts = checkpoints
+            .withNext()
             .map({ graph.allPaths(from: $0, to: $1).count })
         return pathsCounts.product()
     }
