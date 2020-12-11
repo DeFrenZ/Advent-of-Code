@@ -50,27 +50,6 @@ extension Scanner {
     }
 }
 
-extension Scanner {
-    func scan <P: ParseableFromString> (_ type: P.Type) throws -> P {
-        try P.parse(on: self)
-    }
-
-    func scanAll <P: ParseableFromString> (
-        _ type: P.Type,
-        separators: Set<String> = [],
-        stopAt terminators: CharacterSet = .newlines
-    ) throws -> [P] {
-        var parsed: [P] = []
-        while !isAtEnd, peekUnicodeScalar().map(terminators.contains) != true {
-            try parsed.append(scan(P.self))
-            if let separator = separators.first(where: { remainingString.hasPrefix($0) }) {
-                _ = scanString(separator)
-            }
-        }
-        return parsed
-    }
-}
-
 // MARK: - TimeZone
 
 extension TimeZone {
