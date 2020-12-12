@@ -117,7 +117,7 @@ public final class Day11Year2020: DaySolverWithInputs {
      Simulate your seating area by applying the seating rules repeatedly until no seats change state. **How many seats end up occupied?**
      */
     public func solvePart1() -> String {
-        stableSeatLayout()
+        stableSeatLayout(rule: .adjacent)
             .count(occurrencesOf: .occupiedSeat)
             .description
     }
@@ -261,7 +261,8 @@ public final class Day11Year2020: DaySolverWithInputs {
      Given the new visibility method and the rule change for occupied seats becoming empty, once equilibrium is reached, **how many seats end up occupied?**
      */
     public func solvePart2() -> String {
-        0
+        stableSeatLayout(rule: .sight)
+            .count(occurrencesOf: .occupiedSeat)
             .description
     }
 }
@@ -288,84 +289,66 @@ extension Day11Year2020 {
         try! .init(inputElements)
     }
 
-    func stableSeatLayout() -> SeatLayout {
-        let seatLayoutUpdates = sequence(state: initialSeatLayout, next: { (state: inout SeatLayout) -> SeatLayout? in
-            defer { state.updateLayout() }
+    func stableSeatLayout(rule: NeighbourRule) -> SeatLayout {
+        let initialLayout = initialSeatLayout
+        let neighbours = memoized({ initialLayout.neighbourIndices(to: $0, rule: rule) })
+        let seatLayoutUpdates = sequence(state: initialLayout, next: { (state: inout SeatLayout) -> SeatLayout? in
+            defer { state.updateLayout(rule: rule, neighbourIndices: neighbours) }
             return state
         })
         return seatLayoutUpdates.withPrevious()
             .first(where: { $0.current == $0.previous })!
             .current
     }
+
+    enum NeighbourRule {
+        case adjacent
+        case sight
+
+        var minimumSeatsToFreeSeat: Int {
+            switch self {
+            case .adjacent: return 4
+            case .sight: return 5
+            }
+        }
+    }
 }
 
 extension Matrix2 where Element == Day11Year2020.SeatState {
-    func adjacentIndices(to center: Index) -> RangeSet<Index> {
-        let top = index(atRowBefore: center)
-        let topLeft = index(before: top)
-        let topRight = index(after: top)
-        let left = index(before: center)
-        let right = index(after: center)
-        let bottom = index(atRowAfter: center)
-        let bottomLeft = index(before: bottom)
-        let bottomRight = index(after: bottom)
+    func neighbourIndices(to center: Index, rule: Day11Year2020.NeighbourRule) -> [Index] {
+        let directions: [(x: Int, y: Int)] = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
+        return directions
+            .compactMap({ neighbourIndex(from: center, inDirection: $0, rule: rule) })
+    }
 
-        let position = self.position(for: center)
-        let lastRow = elementsPerColumn - 1
-        let lastColumn = elementsPerRow - 1
-        switch (position.row, position.column) {
-        case (0, 0):
-            return .init([
-                        right,
-                bottom, bottomRight,
-            ], within: self)
-        case (lastRow, 0):
-            return .init([
-                top, topRight,
-                     right,
-            ], within: self)
-        case (0, lastColumn):
-            return .init([
-                left,
-                bottomLeft, bottom,
-            ], within: self)
-        case (lastRow, lastColumn):
-            return .init([
-                topLeft, top,
-                left,
-            ], within: self)
-        case (_, 0):
-            return .init([
-                top,    topRight,
-                        right,
-                bottom, bottomRight,
-            ], within: self)
-        case (0, _):
-            return .init([
-                left,               right,
-                bottomLeft, bottom, bottomRight,
-            ], within: self)
-        case (_, lastColumn):
-            return .init([
-                topLeft,    top,
-                left,
-                bottomLeft, bottom,
-            ], within: self)
-        case (lastRow, _):
-            return .init([
-                topLeft, top, topRight,
-                left,         right,
-            ], within: self)
-        default:
-            return .init([
-                topLeft,    top,    topRight,
-                left,               right,
-                bottomLeft, bottom, bottomRight,
-            ], within: self)
+    func indices(from center: Index, inDirection direction: (x: Int, y: Int)) -> AnySequence<Index> {
+        let rows = validRowIndices
+        let columns = validColumnIndices
+        return sequence(state: position(for: center), next: { position in
+            position.column += direction.x
+            position.row += direction.y
+            guard columns.contains(position.column), rows.contains(position.row) else { return nil }
+            return index(position)
+        }).eraseToAnySequence()
+    }
+
+    func neighbourIndex(
+        from center: Index,
+        inDirection direction: (x: Int, y: Int),
+        rule: Day11Year2020.NeighbourRule)
+    -> Index? {
+        let indices = self.indices(from: center, inDirection: direction)
+        switch rule {
+        case .adjacent: return indices.first(where: { _ in true })
+        case .sight: return indices.first(where: { self[$0] != .floor })
         }
     }
 
-    func newSeatState <S: Sequence> (from state: Element, forNeighbours neighbours: S) -> Element where S.Element == Element {
+    func newSeatState <S: Sequence> (
+        from state: Element,
+        forNeighbours neighbours: S,
+        rule: Day11Year2020.NeighbourRule
+    ) -> Element where S.Element == Element {
         switch state {
         case .floor:
             return .floor
@@ -374,17 +357,23 @@ extension Matrix2 where Element == Day11Year2020.SeatState {
                 ? .emptySeat
                 : .occupiedSeat
         case .occupiedSeat:
-            return neighbours.count(occurrencesOf: .occupiedSeat) >= 4
+            let sum = neighbours
+                .count(where: { $0 == .occupiedSeat })
+            return sum >= rule.minimumSeatsToFreeSeat
                 ? .emptySeat
                 : .occupiedSeat
         }
     }
 
-    mutating func updateLayout() {
+    mutating func updateLayout(
+        rule: Day11Year2020.NeighbourRule,
+        neighbourIndices: (Index) -> [Index])
+    {
         var newLayout = self
         for index in indices {
-            let neighbours = adjacentIndices(to: index)
-            newLayout[index] = newSeatState(from: self[index], forNeighbours: self[neighbours])
+            let neighboursIndices = neighbourIndices(index)
+            let neighbours = neighboursIndices.map({ self[$0] })
+            newLayout[index] = newSeatState(from: self[index], forNeighbours: neighbours, rule: rule)
         }
         self = newLayout
     }

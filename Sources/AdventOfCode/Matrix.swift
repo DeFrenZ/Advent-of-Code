@@ -28,29 +28,29 @@ public struct Matrix2 <Element> {
     }
 
     public typealias Row = [Element]
+    public typealias Position = (row: Int, column: Int)
 }
 
 extension Matrix2 {
-    var elementsPerColumn: Int {
-        elements.count / elementsPerRow
-    }
+    var elementsPerColumn: Int { elements.count / elementsPerRow }
+    var validRowIndices: Range<Int> { 0 ..< elementsPerColumn }
+    var validColumnIndices: Range<Int> { 0 ..< elementsPerRow }
 
-    func index(row: Int, column: Int) -> Index {
-        .init(row * elementsPerRow + column)
+    func index(_ position: Position) -> Index {
+        .init(position.row * elementsPerRow + position.column)
     }
-
-    func position(for index: Index) -> (row: Int, column: Int) {
+    func position(for index: Index) -> Position {
         (
             row: index.rawValue / elementsPerRow,
             column: index.rawValue % elementsPerRow)
     }
-
-    func index(atRowBefore i: Index) -> Index { .init(i.rawValue - elementsPerRow) }
-    func index(atRowAfter i: Index) -> Index { .init(i.rawValue + elementsPerRow) }
-
+    subscript(position: Position) -> Element {
+        get { self[index(position)] }
+        set { self[index(position)] = newValue }
+    }
     subscript(row row: Int, column column: Int) -> Element {
-        get { self[index(row: row, column: column)] }
-        set { self[index(row: row, column: column)] = newValue }
+        get { self[(row: row, column: column)] }
+        set { self[(row: row, column: column)] = newValue }
     }
 }
 
@@ -79,7 +79,7 @@ extension Matrix2: RandomAccessCollection, MutableCollection {
     }
 }
 
-// MARK: -
+// MARK: - stdlib
 
 extension Matrix2: Equatable where Element: Equatable {}
 

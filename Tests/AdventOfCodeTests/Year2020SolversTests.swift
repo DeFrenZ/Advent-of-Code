@@ -313,6 +313,6 @@ final class Year2020SolversTests: XCTestCase {
             """
         try testDaySolver(Day11Year2020.self, input: sampleInput, part1Solution: "37", part2Solution: "26")
 
-        try testDaySolver(Day11Year2020.self, part1Solution: "2470", part2Solution: "?")
+        try testDaySolver(Day11Year2020.self, part1Solution: "2470", part2Solution: "2259")
     }
 }
