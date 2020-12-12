@@ -1,5 +1,16 @@
 import Algorithms
 
+// MARK: - BinaryInteger
+
+extension BinaryInteger where Self.Stride == Self {
+    func inRange(_ range: Range<Self>) -> Self {
+        let offset = (self - range.lowerBound) % range.span + range.lowerBound
+        return offset < range.lowerBound
+            ? offset + range.span
+            : offset
+    }
+}
+
 // MARK: - Bool
 
 extension Bool {
@@ -58,6 +69,14 @@ extension Dictionary where Value == Int {
         for element in sequence {
             self[element, default: 0] += 1
         }
+    }
+}
+
+// MARK: - Range
+
+extension Range where Bound: Strideable {
+    var span: Bound.Stride {
+        lowerBound.distance(to: upperBound)
     }
 }
 

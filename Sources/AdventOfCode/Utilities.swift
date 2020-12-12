@@ -67,3 +67,11 @@ public func ?! <T> (_ lhs: T?, _ rhs: Error) throws -> T {
     guard let value = lhs else { throw rhs }
     return value
 }
+
+// MARK: - Pipe
+
+infix operator |>: FunctionArrowPrecedence
+
+public func |> <T, U> (_ lhs: T, rhs: (T) throws -> U) rethrows -> U {
+    try rhs(lhs)
+}
