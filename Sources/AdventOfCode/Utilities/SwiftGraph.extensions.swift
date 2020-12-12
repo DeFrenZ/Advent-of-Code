@@ -32,7 +32,7 @@ extension Graph where V: Hashable, E: Hashable {
     typealias VertexPath = [V]
 }
 
-struct AllPathsSearchState<Vertex: Hashable> {
+private struct AllPathsSearchState<Vertex: Hashable> {
     var visited: Set<Vertex> = []
     var currentPath: Path = []
     var results: Set<Path> = []
