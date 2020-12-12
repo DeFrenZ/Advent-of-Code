@@ -69,4 +69,23 @@ final class Year2018SolversTests: XCTestCase {
 
         try testDaySolver(Day4Year2018.self, part1Solution: "99911", part2Solution: "65854")
     }
+
+    func testDay5() throws {
+        let sampleInput = "aA"
+        try testDaySolver(Day5Year2018.self, input: sampleInput, part1Solution: "0")
+
+        let sampleInput2 = "abBA"
+        try testDaySolver(Day5Year2018.self, input: sampleInput2, part1Solution: "0")
+
+        let sampleInput3 = "abAB"
+        try testDaySolver(Day5Year2018.self, input: sampleInput3, part1Solution: "4")
+
+        let sampleInput4 = "aabAAB"
+        try testDaySolver(Day5Year2018.self, input: sampleInput4, part1Solution: "6")
+
+        let sampleInput5 = "dabAcCaCBAcCcaDA"
+        try testDaySolver(Day5Year2018.self, input: sampleInput5, part1Solution: "10", part2Solution: "4")
+
+        try testDaySolver(Day5Year2018.self, part1Solution: "9116", part2Solution: "6890")
+    }
 }

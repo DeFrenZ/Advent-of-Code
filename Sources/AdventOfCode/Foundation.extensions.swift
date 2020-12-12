@@ -40,13 +40,29 @@ extension Scanner {
         remainingString.unicodeScalars.first
     }
 
+    public func scanUInt8(representation: NumberRepresentation) -> UInt8? {
+        guard let character = scanCharacter() else { return nil }
+        guard let number = UInt8(String(character), radix: representation.radix) else { return nil }
+        return number
+    }
+
     public func scanUInt16(representation: NumberRepresentation) -> UInt16? {
         let parseEndIndex = string.index(currentIndex, offsetBy: 2)
         guard parseEndIndex <= string.endIndex else { return nil }
         let parsedString = string[currentIndex ..< parseEndIndex]
-        guard let number = UInt16(parsedString, radix: 16) else { return nil }
+        guard let number = UInt16(parsedString, radix: representation.radix) else { return nil }
         self.currentIndex = parseEndIndex
         return number
+    }
+}
+
+extension Scanner.NumberRepresentation {
+    var radix: Int {
+        switch self {
+        case .decimal: return 10
+        case .hexadecimal: return 16
+        @unknown default: return 0
+        }
     }
 }
 

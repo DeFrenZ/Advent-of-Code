@@ -61,6 +61,13 @@ extension Collection {
     }
 }
 
+extension Collection {
+    var onlyValue: Element? {
+        guard count == 1 else { return nil }
+        return first
+    }
+}
+
 // MARK: - Dictionary
 
 extension Dictionary where Value == Int {
@@ -69,6 +76,32 @@ extension Dictionary where Value == Int {
         for element in sequence {
             self[element, default: 0] += 1
         }
+    }
+}
+
+extension Dictionary {
+    public init <S: Sequence> (
+        indexing values: S,
+        by keyForValue: (Value) throws -> Key,
+        uniquingKeysWith combine: (Value, Value) throws -> Value)
+    rethrows where S.Element == Value {
+        func uniqueValue(from values: [Value]) throws -> Value? {
+            guard let first = values.first else { return nil }
+            return try values.dropFirst().reduce(first, combine)
+        }
+
+        let grouped = try Dictionary<Key, [Value]>(grouping: values, by: keyForValue)
+        // `uniqueValue(from:)` returns `nil` only when is empty, and `init(grouping:by:)` doesn't have empty values
+        self = try grouped.mapValues({ try uniqueValue(from: $0)! })
+    }
+}
+
+extension Dictionary where Value: Hashable {
+    init <S: Sequence> (indexingUniqueValues values: S) where S.Element == Value, Key == Value {
+        self.init(
+            indexing: values,
+            by: { $0 },
+            uniquingKeysWith: { fatalError("Given sequence has non-unique values \($0) and \($1): \(values)") })
     }
 }
 
@@ -133,6 +166,10 @@ extension Sequence {
 
     public func flattened <T> () -> [T] where Element == [T] {
         flatMap({ $0 })
+    }
+
+    public func min <T: Comparable> (on transform: (Element) throws -> T) rethrows -> Element? {
+        try self.min(by: { try transform($0) < transform($1) })
     }
 
     public func max <T: Comparable> (on transform: (Element) throws -> T) rethrows -> Element? {
