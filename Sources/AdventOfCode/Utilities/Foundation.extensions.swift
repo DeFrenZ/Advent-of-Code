@@ -9,6 +9,20 @@ extension Calendar {
     }
 }
 
+// MARK: - Comparable
+
+extension Comparable {
+    func compared(to other: Self) -> ComparisonResult {
+        if self == other {
+            return .orderedSame
+        } else if self < other {
+            return .orderedAscending
+        } else {
+            return .orderedDescending
+        }
+    }
+}
+
 // MARK: - DateFormatter
 
 extension DateFormatter {

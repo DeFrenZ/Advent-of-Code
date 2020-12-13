@@ -1,3 +1,5 @@
+import Foundation
+
 // MARK: - Memoization
 
 /// Memoize a function that calls itself recursively.
@@ -74,4 +76,12 @@ infix operator |>: FunctionArrowPrecedence
 
 public func |> <T, U> (lhs: T, rhs: (T) throws -> U) rethrows -> U {
     try rhs(lhs)
+}
+
+// MARK: - Three-way comparison
+
+infix operator <=>: ComparisonPrecedence
+
+public func <=> <T: Comparable> (lhs: T, rhs: T) -> ComparisonResult {
+    lhs.compared(to: rhs)
 }

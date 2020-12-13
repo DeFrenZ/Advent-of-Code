@@ -27,6 +27,7 @@ func daySolverType(year: Int, day: Int) throws -> DaySolver.Type {
     case (2020, 10): return Day10Year2020.self
     case (2020, 11): return Day11Year2020.self
     case (2020, 12): return Day12Year2020.self
+    case (2020, 13): return Day13Year2020.self
     default: throw DaySolverError.unsolvedDay(year: year, day: day)
     }
 }

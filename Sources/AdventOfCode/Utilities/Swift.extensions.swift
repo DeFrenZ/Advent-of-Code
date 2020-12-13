@@ -2,12 +2,83 @@ import Algorithms
 
 // MARK: - BinaryInteger
 
+extension BinaryInteger {
+    func firstMultiple(after threshold: Self) -> Self {
+        threshold + self - (threshold % self)
+    }
+
+    // Greater Common Divisor
+    static func gcd(_ lhs: Self, _ rhs: Self) -> Self {
+        // https://en.wikipedia.org/wiki/Euclidean_algorithm
+        assert(lhs > 0 && rhs > 0)
+
+        switch lhs <=> rhs {
+        case .orderedSame: return lhs
+        case .orderedDescending: return gcd(lhs - rhs, rhs)
+        case .orderedAscending: return gcd(lhs, rhs - lhs)
+        }
+    }
+
+    func isCoprime(to other: Self) -> Bool {
+        Self.gcd(self, other) == 1
+    }
+
+    func primeFactors() -> [Self: Int] {
+        // https://en.wikipedia.org/wiki/Trial_division
+        assert(self > 0)
+
+        var foundPrimes: [Self: Int] = [:]
+        var currentFactor: Self = 2
+        var remainingValue = self
+        while remainingValue > 1 {
+            guard remainingValue.isMultiple(of: currentFactor) else {
+                currentFactor += 1
+                continue
+            }
+            foundPrimes[currentFactor, default: 0] += 1
+            remainingValue /= currentFactor
+        }
+        return foundPrimes
+    }
+}
+
+extension BinaryInteger where Self: SignedNumeric {
+    // Least Common Multiplier
+    static func lcm(_ lhs: Self, _ rhs: Self) -> Self {
+        // https://en.wikipedia.org/wiki/Least_common_multiple#Using_the_greatest_common_divisor
+        (abs(lhs) / gcd(lhs, rhs)) * abs(rhs)
+    }
+}
+
 extension BinaryInteger where Self.Stride == Self {
     func inRange(_ range: Range<Self>) -> Self {
         let offset = (self - range.lowerBound) % range.span + range.lowerBound
         return offset < range.lowerBound
             ? offset + range.span
             : offset
+    }
+
+    // Chinese Remainder Theorem
+    static func crt(_ congruences: [(divisor: Self, remainder: Self)]) -> Self? {
+        // https://en.wikipedia.org/wiki/Chinese_remainder_theorem#Search_by_sieving
+        // TODO: Use Bézout coefficients instead. https://en.wikipedia.org/wiki/Chinese_remainder_theorem#Using_the_existence_construction
+        let sortedCongruences = congruences
+            .sorted(on: \.divisor)
+            .reversed()
+            .map({ (divisor: $0.divisor, remainder: $0.remainder.inRange(0 ..< $0.divisor)) })
+
+        guard let firstCongruence = sortedCongruences.first else { return nil }
+
+        var currentSolution = firstCongruence.remainder
+        var currentMultiple = firstCongruence.divisor
+        for congruence in sortedCongruences.dropFirst() {
+            while currentSolution % congruence.divisor != congruence.remainder {
+                currentSolution += currentMultiple
+            }
+//            assert(currentMultiple.isCoprime(to: congruence.divisor), "should use lcm instead if they're not coprime")
+            currentMultiple *= congruence.divisor
+        }
+        return currentSolution
     }
 }
 
@@ -136,6 +207,18 @@ extension Sequence {
         return count
     }
 
+    func reduce(_ nextPartialResult: (_ partialResult: Element, Element) throws -> Element) rethrows -> Element? {
+        var iterator = makeIterator()
+        guard let initialResult = iterator.next() else { return nil }
+        return try IteratorSequence(iterator).reduce(initialResult, nextPartialResult)
+    }
+
+    func reduce(_ nextPartialResult: (_ partialResult: inout Element, Element) throws -> Void) rethrows -> Element? {
+        var iterator = makeIterator()
+        guard let initialResult = iterator.next() else { return nil }
+        return try IteratorSequence(iterator).reduce(into: initialResult, nextPartialResult)
+    }
+
     public func scan <Result> (_ initialResult: Result, nextResult: @escaping (Result, Element) -> Result) -> AnyIterator<Result> {
         var currentResult: Result = initialResult
         var didPublishInitialResult = false
@@ -208,5 +291,17 @@ extension Sequence where Element: Equatable {
 extension Sequence where Element: Hashable {
     public func toSet() -> Set<Element> {
         Set(self)
+    }
+}
+
+extension Sequence where Element: BinaryInteger {
+    public func gcd() -> Element? {
+        reduce(Element.gcd)
+    }
+}
+
+extension Sequence where Element: BinaryInteger, Element: SignedNumeric {
+    public func lcm() -> Element? {
+        reduce(Element.lcm)
     }
 }
