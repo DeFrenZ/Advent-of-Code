@@ -63,7 +63,7 @@ public func updated <T> (_ value: T, with update: (inout T) -> Void) -> T {
 
 infix operator ?!: NilCoalescingPrecedence
 
-public func ?! <T> (_ lhs: T?, _ rhs: Error) throws -> T {
+public func ?! <T> (lhs: T?, rhs: Error) throws -> T {
     guard let value = lhs else { throw rhs }
     return value
 }
@@ -72,6 +72,6 @@ public func ?! <T> (_ lhs: T?, _ rhs: Error) throws -> T {
 
 infix operator |>: FunctionArrowPrecedence
 
-public func |> <T, U> (_ lhs: T, rhs: (T) throws -> U) rethrows -> U {
+public func |> <T, U> (lhs: T, rhs: (T) throws -> U) rethrows -> U {
     try rhs(lhs)
 }
