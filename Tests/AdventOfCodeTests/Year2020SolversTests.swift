@@ -344,4 +344,24 @@ final class Year2020SolversTests: XCTestCase {
 
         try testDaySolver(Day13Year2020.self, part1Solution: "4782", part2Solution: "1118684865113056")
     }
+
+    func testDay14() throws {
+        let sampleInput = """
+            mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
+            mem[8] = 11
+            mem[7] = 101
+            mem[8] = 0
+            """
+        try testDaySolver(Day14Year2020.self, input: sampleInput, part1Solution: "165")
+
+        let sampleInput2 = """
+            mask = 000000000000000000000000000000X1001X
+            mem[42] = 100
+            mask = 00000000000000000000000000000000X0XX
+            mem[26] = 1
+            """
+        try testDaySolver(Day14Year2020.self, input: sampleInput2, part2Solution: "208")
+
+        try testDaySolver(Day14Year2020.self, part1Solution: "17028179706934", part2Solution: "3683236147222")
+    }
 }
