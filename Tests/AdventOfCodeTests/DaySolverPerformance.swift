@@ -81,4 +81,12 @@ final class DaySolverPerformace: XCTestCase {
     func testPerformanceDay13Year2020() throws {
         measure { executeDaySolver(Day13Year2020.self) }
     }
+
+    func testPerformanceDay14Year2020() throws {
+        measure { executeDaySolver(Day14Year2020.self) }
+    }
+
+    func testPerformanceDay15Year2020() throws {
+        measure { executeDaySolver(Day15Year2020.self) }
+    }
 }

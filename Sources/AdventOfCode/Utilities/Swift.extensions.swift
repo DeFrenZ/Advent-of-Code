@@ -176,6 +176,15 @@ extension Dictionary where Value: Hashable {
     }
 }
 
+extension Dictionary {
+    mutating func mapValuesInPlace(_ transform: (inout Value) throws -> Void) rethrows {
+        for (key, var value) in self {
+            try transform(&value)
+            self[key] = value
+        }
+    }
+}
+
 // MARK: - Range
 
 extension Range where Bound: Strideable {
@@ -263,6 +272,14 @@ extension Sequence {
         try self.sorted(by: { try transform($0) < transform($1) })
     }
 
+    public func element(atOffset offset: Int) -> Element? {
+        enumerated()
+            .first(where: { $0.offset == offset })?
+            .element
+    }
+}
+
+extension Sequence {
     public func withPrevious() -> AnySequence<(current: Element, previous: Element)> {
         var iterator = makeIterator()
         guard let first = iterator.next() else { return [].eraseToAnySequence() }

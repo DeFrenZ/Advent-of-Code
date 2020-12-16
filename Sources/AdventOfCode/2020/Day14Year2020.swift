@@ -29,6 +29,7 @@ public final class Day14Year2020: DaySolverWithInputs {
      mem[7] = 101
      mem[8] = 0
      ```
+
      This program starts by specifying a bitmask (`mask = ....`). The mask it specifies will overwrite two bits in every written value: the `2`s bit is overwritten with `0`, and the `64`s bit is overwritten with `1`.
 
      The program then attempts to write the value `11` to memory address `8`. By expanding everything out to individual bits, the mask is applied as follows:
