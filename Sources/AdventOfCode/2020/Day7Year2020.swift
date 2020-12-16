@@ -140,7 +140,7 @@ extension Day7Year2020.Rule: ParseableFromString {
         let contents = try scanner.scanAll(
             BagColorCountPair.self,
             separators: [", "],
-            stopAt: .init(charactersIn: "."))
+            stopAt: ["."])
         _ = try scanner.scanString(".") ?! ParseError.noPeriod(scanner.remainingString)
 
         let containedBags = Dictionary(grouping: contents, by: \.bagColor)

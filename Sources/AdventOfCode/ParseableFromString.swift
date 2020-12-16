@@ -34,11 +34,25 @@ extension Scanner {
     func scanAll <P: ParseableFromString> (
         _ type: P.Type,
         separators: Set<String> = [],
-        stopAt terminators: CharacterSet = .newlines
+        stopAt terminators: Set<String> = ["\n"]
     ) throws -> [P] {
+        try scanAll(
+            P.parse(on:),
+            separators: separators,
+            stopAt: terminators)
+    }
+
+    func scanAll <P> (
+        _ scanElement: (Scanner) throws -> P,
+        separators: Set<String> = [],
+        stopAt terminators: Set<String> = ["\n"]
+    ) rethrows -> [P] {
         var parsed: [P] = []
-        while !isAtEnd, peekUnicodeScalar().map(terminators.contains) != true {
-            try parsed.append(scan(P.self))
+        while !isAtEnd {
+            try parsed.append(scanElement(self))
+            if terminators.isEmpty.not, terminators.contains(where: remainingString.hasPrefix) {
+                break
+            }
             if let separator = separators.first(where: { remainingString.hasPrefix($0) }) {
                 _ = scanString(separator)
             }

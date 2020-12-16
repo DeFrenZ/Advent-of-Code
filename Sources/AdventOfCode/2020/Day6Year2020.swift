@@ -170,7 +170,10 @@ extension Day6Year2020.GroupAnswers: ParseableFromString {
     }
 
     public static func parse(on scanner: Scanner) throws -> Self {
-        let answers = try scanner.scanAll(PersonAnswers.self, separators: ["\n"])
+        let answers = try scanner.scanAll(
+            PersonAnswers.self,
+            separators: ["\n"],
+            stopAt: ["\n\n"])
         return Self(personsAnswers: answers)
     }
 }

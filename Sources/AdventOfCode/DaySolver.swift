@@ -28,6 +28,8 @@ func daySolverType(year: Int, day: Int) throws -> DaySolver.Type {
     case (2020, 11): return Day11Year2020.self
     case (2020, 12): return Day12Year2020.self
     case (2020, 13): return Day13Year2020.self
+    case (2020, 14): return Day14Year2020.self
+    case (2020, 15): return Day15Year2020.self
     default: throw DaySolverError.unsolvedDay(year: year, day: day)
     }
 }
@@ -38,18 +40,32 @@ enum DaySolverError: Swift.Error {
 
 import Foundation
 
+// MARK: - DaySolverWithSingleInput
+
+public protocol DaySolverWithSingleInput: DaySolver {
+    associatedtype Input: ParseableFromString
+    init(input: Input)
+}
+
+extension DaySolverWithSingleInput {
+    public init(input: String) throws {
+        let input = try Input.parse(from: input)
+        self.init(input: input)
+    }
+}
+
 // MARK: - DaySolverWithInputs
 
 public protocol DaySolverWithInputs: DaySolver {
     associatedtype InputElement: ParseableFromString
     static var elementsSeparator: String { get }
-    init(inputElements: [InputElement]) throws
+    init(inputElements: [InputElement])
 }
 
 extension DaySolverWithInputs {
     public init(input: String) throws {
         let inputElements = try Self.parseInputElements(input: input)
-        try self.init(inputElements: inputElements)
+        self.init(inputElements: inputElements)
     }
 }
 
@@ -75,14 +91,14 @@ public protocol DaySolverWithHeaderAndInputs: DaySolver {
     associatedtype InputElement: ParseableFromString
     static var headerSeparator: String { get }
     static var elementsSeparator: String { get }
-    init(headerElement: HeaderElement, inputElements: [InputElement]) throws
+    init(headerElement: HeaderElement, inputElements: [InputElement])
 }
 
 extension DaySolverWithHeaderAndInputs {
     public init(input: String) throws {
         let (headerElement, remainingInput) = try Self.parseHeaderElement(input: input)
         let inputElements = try Self.parseInputElements(input: remainingInput)
-        try self.init(headerElement: headerElement, inputElements: inputElements)
+        self.init(headerElement: headerElement, inputElements: inputElements)
     }
 }
 
