@@ -376,4 +376,39 @@ final class Year2020SolversTests: XCTestCase {
 
         try testDaySolver(Day15Year2020.self, part1Solution: "1280", part2Solution: "651639")
     }
+
+    func testDay16() throws {
+        let sampleInput = """
+            class: 1-3 or 5-7
+            row: 6-11 or 33-44
+            seat: 13-40 or 45-50
+
+            your ticket:
+            7,1,14
+
+            nearby tickets:
+            7,3,47
+            40,4,50
+            55,2,20
+            38,6,12
+            """
+        try testDaySolver(Day16Year2020.self, input: sampleInput, part1Solution: "71")
+
+        let sampleInput2 = """
+            class: 0-1 or 4-19
+            row: 0-5 or 8-19
+            seat: 0-13 or 16-19
+
+            your ticket:
+            11,12,13
+
+            nearby tickets:
+            3,9,18
+            15,1,5
+            5,14,9
+            """
+        XCTAssertEqual(try Day16Year2020(input: sampleInput2).deducedFields(), ["row", "class", "seat"])
+
+//        try testDaySolver(Day16Year2020.self, part1Solution: "25972", part2Solution: "?")
+    }
 }
