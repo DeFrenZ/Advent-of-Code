@@ -1,8 +1,10 @@
+import StandardLibraryPreview
+
 public struct Matrix2 <Element> {
-    private var elements: [Element]
+    private var elements: Storage
     public let elementsPerRow: Int
 
-    private init(uncheckedElements elements: [Element], columns: Int) {
+    private init(uncheckedElements elements: Storage, columns: Int) {
         self.elements = elements
         self.elementsPerRow = columns
     }
@@ -27,14 +29,16 @@ public struct Matrix2 <Element> {
         case empty
     }
 
-    public typealias Row = [Element]
-    public typealias Position = (row: Int, column: Int)
+    fileprivate typealias Storage = [Element]
+    public typealias RowIndex = Int
+    public typealias ColumnIndex = Int
+    public typealias Position = (row: RowIndex, column: ColumnIndex)
 }
 
 extension Matrix2 {
     var elementsPerColumn: Int { elements.count / elementsPerRow }
-    var validRowIndices: Range<Int> { 0 ..< elementsPerColumn }
-    var validColumnIndices: Range<Int> { 0 ..< elementsPerRow }
+    var validRowIndices: Range<RowIndex> { 0 ..< elementsPerColumn }
+    var validColumnIndices: Range<ColumnIndex> { 0 ..< elementsPerRow }
 
     func index(_ position: Position) -> Index {
         .init(position.row * elementsPerRow + position.column)
@@ -48,9 +52,41 @@ extension Matrix2 {
         get { self[index(position)] }
         set { self[index(position)] = newValue }
     }
-    subscript(row row: Int, column column: Int) -> Element {
+    subscript(row row: RowIndex, column column: ColumnIndex) -> Element {
         get { self[(row: row, column: column)] }
         set { self[(row: row, column: column)] = newValue }
+    }
+}
+
+extension Matrix2 {
+    public var rows: AnySequence<ArraySlice<Element>> {
+        validRowIndices
+            .lazy
+            .map(row(atIndex:))
+            .eraseToAnySequence()
+    }
+
+    public func row(atIndex index: RowIndex) -> ArraySlice<Element> {
+        let startIndex = self.index((row: index, column: 0)).rawValue
+        let endIndex = elements.index(startIndex, offsetBy: elementsPerRow)
+        return elements[startIndex ..< endIndex]
+    }
+
+    public var columns: AnySequence<AnySequence<Element>> {
+        validColumnIndices
+            .lazy
+            .map(column(atIndex:))
+            .eraseToAnySequence()
+    }
+
+    public func column(atIndex index: ColumnIndex) -> AnySequence<Element> {
+        let indices = validRowIndices
+            .map({ (row: $0, column: index) })
+            .map(self.index)
+            .map(\.rawValue)
+        let rangeSet = RangeSet(indices, within: elements)
+        return elements[rangeSet]
+            .eraseToAnySequence()
     }
 }
 
@@ -68,8 +104,8 @@ extension Matrix2: RandomAccessCollection, MutableCollection {
     }
 
     public struct Index: Hashable, Comparable {
-        fileprivate var rawValue: Row.Index
-        fileprivate init(_ rawValue: Row.Index) {
+        fileprivate var rawValue: Storage.Index
+        fileprivate init(_ rawValue: Storage.Index) {
             self.rawValue = rawValue
         }
 

@@ -409,6 +409,6 @@ final class Year2020SolversTests: XCTestCase {
             """
         XCTAssertEqual(try Day16Year2020(input: sampleInput2).deducedFields(), ["row", "class", "seat"])
 
-//        try testDaySolver(Day16Year2020.self, part1Solution: "25972", part2Solution: "?")
+        try testDaySolver(Day16Year2020.self, part1Solution: "25972", part2Solution: "622670335901")
     }
 }

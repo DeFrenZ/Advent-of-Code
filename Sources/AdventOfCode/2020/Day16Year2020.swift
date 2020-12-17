@@ -116,7 +116,7 @@ public extension Day16Year2020 {
         typealias Ticket = Day16Year2020.Ticket
     }
 
-    struct FieldRule {
+    struct FieldRule: Hashable {
         var ruleName: String
         var ranges: [ClosedRange<Int>]
     }
@@ -218,8 +218,46 @@ extension Day16Year2020 {
     }
 
     public func deducedFields() -> [String] {
-        // TODO
-        return []
+        let allRules = allRulesRangeSet
+        let validNearbyTickets = input.nearbyTickets
+            .filter({ $0.fieldsValuesNotMatchingAnyRule(allRules).isEmpty })
+        let nearbyTicketsFieldsRangeSets = Self.fieldsRangeSets(for: validNearbyTickets)
+        let possibleRulesPerField = nearbyTicketsFieldsRangeSets
+            .map({ Self.possibleRules(forFieldEntries: $0, allRules: input.rules) })
+        let pickedRules = Self.pickRules(fromPossibleRules: possibleRulesPerField)!
+        return pickedRules.map(\.ruleName)
+    }
+
+    public static func fieldsRangeSets(for tickets: [Ticket]) -> [RangeSet<Int>] {
+        let fieldValuesGrid = tickets
+            .map(\.fieldsValues)
+        let fieldValuesMatrix = try! Matrix2(fieldValuesGrid)
+        return fieldValuesMatrix.columns
+            .map({ column in
+                column.reduce(into: RangeSet(), { $0.formUnion(.init($1 ..< $1 + 1)) })
+            })
+    }
+
+    static func possibleRules(forFieldEntries fieldEntries: RangeSet<Int>, allRules: [FieldRule]) -> Set<FieldRule> {
+        allRules
+            .filter({ $0.rangeSet.isSuperset(of: fieldEntries) })
+            |> Set.init
+    }
+
+    static func pickRules(fromPossibleRules possibleRules: [Set<FieldRule>]) -> [FieldRule]? {
+        var stillPossibleRules = possibleRules
+        var pickedRules: [FieldRule?] = Array(repeating: nil, count: possibleRules.count)
+
+        while pickedRules.contains(nil) {
+            guard let nextPickIndex = stillPossibleRules.firstIndex(where: { $0.count == 1 }) else { return nil }
+            let nextPick = stillPossibleRules[nextPickIndex].onlyValue!
+            pickedRules[nextPickIndex] = nextPick
+            for index in stillPossibleRules.indices {
+                stillPossibleRules[index].remove(nextPick)
+            }
+        }
+
+        return pickedRules.compacted()
     }
 }
 
