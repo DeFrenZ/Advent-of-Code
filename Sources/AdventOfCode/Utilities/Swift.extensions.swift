@@ -272,6 +272,15 @@ extension Sequence {
         try self.sorted(by: { try transform($0) < transform($1) })
     }
 
+    public func elementsRange <T: Comparable> (on transform: (Element) throws -> T) rethrows -> ClosedRange<T>? {
+        let transformedElements = try map(transform)
+        guard
+            let min = transformedElements.min(),
+            let max = transformedElements.max()
+        else { return nil }
+        return min ... max
+    }
+
     public func element(atOffset offset: Int) -> Element? {
         enumerated()
             .first(where: { $0.offset == offset })?
