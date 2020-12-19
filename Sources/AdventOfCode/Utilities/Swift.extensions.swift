@@ -93,6 +93,13 @@ extension Bool {
 // MARK: - Collection
 
 extension Collection {
+    public subscript(ifIndexIsValid index: Index) -> Element? {
+        guard indices.contains(index) else { return nil }
+        return self[index]
+    }
+}
+
+extension Collection {
     public func index(atOffset offset: Int) -> Index? {
         index(startIndex, offsetBy: offset, limitedBy: endIndex)
     }

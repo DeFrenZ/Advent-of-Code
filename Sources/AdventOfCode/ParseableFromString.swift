@@ -53,7 +53,10 @@ extension Scanner {
             if terminators.isEmpty.not, terminators.contains(where: remainingString.hasPrefix) {
                 break
             }
-            if let separator = separators.first(where: { remainingString.hasPrefix($0) }) {
+            if let separator = separators
+                .filter({ remainingString.hasPrefix($0) })
+                .max(on: \.count)
+            {
                 _ = scanString(separator)
             }
         }
