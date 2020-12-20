@@ -70,6 +70,8 @@ public func ?! <T> (lhs: T?, rhs: Error) throws -> T {
     return value
 }
 
+struct UndefinedError: Error {}
+
 // MARK: - Pipe
 
 infix operator |>: FunctionArrowPrecedence

@@ -43,6 +43,14 @@ extension Locale {
     public static let posix = Self(identifier: "en_US_POSIX")
 }
 
+// MARK: - NSRegularExpression
+
+extension NSRegularExpression {
+    func matches(_ string: String) -> Bool {
+        firstMatch(in: string, options: .anchored, range: string.fullNSRange) != nil
+    }
+}
+
 // MARK: - Scanner
 
 extension Scanner {
@@ -77,6 +85,14 @@ extension Scanner.NumberRepresentation {
         case .hexadecimal: return 16
         @unknown default: return 0
         }
+    }
+}
+
+// MARK: - String
+
+extension String {
+    var fullNSRange: NSRange {
+        .init(location: 0, length: (self as NSString).length)
     }
 }
 

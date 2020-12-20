@@ -183,6 +183,15 @@ extension Dictionary where Value: Hashable {
     }
 }
 
+extension Dictionary where Value: Identifiable {
+    init <S: Sequence> (indexingValuesByID values: S) where S.Element == Value, Key == Value.ID {
+        self.init(
+            indexing: values,
+            by: \.id,
+            uniquingKeysWith: { fatalError("Given sequence has multiple values \($0) and \($1) with the same ID: \($0.id)") })
+    }
+}
+
 extension Dictionary {
     mutating func mapValuesInPlace(_ transform: (inout Value) throws -> Void) rethrows {
         for (key, var value) in self {
@@ -221,6 +230,10 @@ extension Sequence {
             count += 1
         }
         return count
+    }
+
+    public func hasCount(_ count: Int) -> Bool {
+        prefix(count + 1).count(where: { _ in true }) == count
     }
 
     func reduce(_ nextPartialResult: (_ partialResult: Element, Element) throws -> Element) rethrows -> Element? {
