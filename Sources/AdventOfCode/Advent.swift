@@ -13,13 +13,13 @@ struct Advent: ParsableCommand {
 	@Option(name: .shortAndLong, help: "The day of the Advent of Code to solve")
 	var day: Int
 
-    @Argument(help: "The input to parse")
-    var input: [String]
+    @Option(name: .customLong("path"), help: "The path at which to get the input from")
+    var inputPath: String
 	
     mutating func run() throws {
         let solverType = try daySolverType(year: year, day: day)
-        let fullInput = input.joined(separator: "\n")
-        let solver = try solverType.init(input: fullInput)
+		let input = try String(contentsOf: URL(fileURLWithPath: inputPath), encoding: .utf8)
+        let solver = try solverType.init(input: input)
         print("Part 1: \(solver.solvePart1())")
         print("Part 2: \(solver.solvePart2())")
 	}
