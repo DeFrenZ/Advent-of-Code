@@ -1,5 +1,4 @@
 import Foundation
-import StandardLibraryPreview
 
 public final class Day11Year2020: DaySolverWithInputs {
     public static let day = 11

@@ -102,7 +102,7 @@ public extension Day7Year2020 {
         typealias BagColorCountPair = Day7Year2020.BagColorCountPair
     }
 
-    struct BagColor: Hashable {
+	struct BagColor: Hashable, Sendable {
         var colorName: String
 
         static let shinyGold: Self = .init(colorName: "shiny gold")

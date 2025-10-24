@@ -68,6 +68,7 @@ public final class Day3Year2018: DaySolverWithInputs {
         let intersectionPoints = intersections
             .flatMap(\.intersection.points)
             .uniqued()
+			.toArray()
         return intersectionPoints.count
             .description
     }

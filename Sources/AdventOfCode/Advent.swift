@@ -3,7 +3,9 @@ import ArgumentParser
 
 @main
 struct Advent: ParsableCommand {
-    static let configuration: CommandConfiguration = .init(abstract: "Solve the puzzle of the given day of the Advent of Code")
+	static var configuration: CommandConfiguration {
+		.init(abstract: "Solve the puzzle of the given day of the Advent of Code")
+	}
 
     @Option(name: .shortAndLong, help: "The year of the Advent of Code to solve")
     var year: Int = 2020

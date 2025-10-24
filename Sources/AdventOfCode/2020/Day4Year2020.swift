@@ -1,4 +1,5 @@
 import Foundation
+import struct ApplicationServices.RGBColor
 
 public final class Day4Year2020: DaySolverWithInputs {
     public static let day = 4

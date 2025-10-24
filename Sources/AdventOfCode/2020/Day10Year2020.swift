@@ -177,7 +177,7 @@ public final class Day10Year2020: DaySolverWithInputs {
 // MARK: - Input
 
 public extension Day10Year2020 {
-    struct Adapter: RawRepresentable {
+	struct Adapter: RawRepresentable, Sendable {
         public var rawValue: Int
         public init(rawValue: Int) {
             self.rawValue = rawValue

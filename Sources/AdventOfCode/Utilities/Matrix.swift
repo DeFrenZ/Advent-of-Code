@@ -1,5 +1,3 @@
-import StandardLibraryPreview
-
 public struct Matrix2 <Element> {
     private var elements: Storage
     public let elementsPerRow: Int

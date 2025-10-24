@@ -315,6 +315,6 @@ extension Day14Year2020.Instruction.Bit {
         allOnesMask - one(atOffset: offset)
     }
 
-    static var allOnesMask: Day14Year2020.ResolvedBitmask = 0b111111111111111111111111111111111111
-    static var allZerosMask: Day14Year2020.ResolvedBitmask = 0b000000000000000000000000000000000000
+	static let allOnesMask: Day14Year2020.ResolvedBitmask = 0b111111111111111111111111111111111111
+	static let allZerosMask: Day14Year2020.ResolvedBitmask = 0b000000000000000000000000000000000000
 }
