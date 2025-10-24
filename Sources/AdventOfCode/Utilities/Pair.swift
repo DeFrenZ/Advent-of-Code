@@ -36,6 +36,14 @@ extension Pair: Comparable where A: Comparable, B: Comparable {
     }
 }
 
+extension Pair {
+    var flipped: Pair<B, A> { .init(a: b, b: a) }
+}
+
+extension Pair where A == B, A: Comparable {
+    var sorted: Self { .init(a: min(a, b), b: max(a, b)) }
+}
+
 public func toPairArgument <InputA, InputB, Output> (
     _ function: @escaping (InputA, InputB) -> Output)
 -> (Pair<InputA, InputB>) -> Output {

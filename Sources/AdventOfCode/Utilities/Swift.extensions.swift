@@ -144,6 +144,10 @@ extension Collection {
         guard count == 1 else { return nil }
         return first
     }
+
+    func eraseToAnyCollection() -> AnyCollection<Element> {
+        AnyCollection(self)
+    }
 }
 
 // MARK: - Dictionary
