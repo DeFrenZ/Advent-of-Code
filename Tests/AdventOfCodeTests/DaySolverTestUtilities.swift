@@ -1,41 +1,42 @@
-import XCTest
+import Testing
+import class Foundation.Bundle
 import AdventOfCode
 
-extension XCTestCase {
-    func testDaySolver <Solver: DaySolver> (
-        _ solverType: Solver.Type,
-        input: String = input(year: Solver.year, day: Solver.day),
-        part1Solution: String? = nil,
-        part2Solution: String? = nil,
-		file: StaticString = #filePath,
-        line: UInt = #line)
-    throws {
-        let solver = try Solver(input: input)
+extension DaySolver {
+	static func testSolutions(
+		input: String = puzzleInput(),
+		part1Solution: String? = nil,
+		part2Solution: String? = nil,
+		sourceLocation: SourceLocation = #_sourceLocation)
+	throws {
+		let solver = try Self.init(input: input)
 
-        if let part1Solution = part1Solution {
-            let part1ComputedSolution = solver.solvePart1()
-            XCTAssertEqual(part1ComputedSolution, part1Solution, "Solution of \(Solver.self),1 is incorrect", file: file, line: line)
-        }
+		if let part1Solution = part1Solution {
+			let part1ComputedSolution = solver.solvePart1()
+			#expect(
+				part1ComputedSolution == part1Solution,
+				"Solution of \(Self.self),1 is incorrect",
+				sourceLocation: sourceLocation)
+		}
 
-        if let part2Solution = part2Solution {
-            let part2ComputedSolution = solver.solvePart2()
-            XCTAssertEqual(part2ComputedSolution, part2Solution, "Solution of \(Solver.self),2 is incorrect", file: file, line: line)
-        }
-    }
+		if let part2Solution = part2Solution {
+			let part2ComputedSolution = solver.solvePart2()
+			#expect(
+				part2ComputedSolution == part2Solution,
+				"Solution of \(Self.self),2 is incorrect",
+				sourceLocation: sourceLocation)
+		}
+	}
 
-	func executeDaySolver <Solver: DaySolver> (_ solverType: Solver.Type, file: StaticString = #filePath, line: UInt = #line) {
-        let inputFromFile = input(year: Solver.year, day: Solver.day)
-        guard let solver = try? Solver(input: inputFromFile) else {
-            XCTFail(file: file, line: line)
-            return
-        }
-        _ = solver.solvePart1()
-        _ = solver.solvePart2()
-    }
-}
+	static func computeSolutions() throws {
+		let solver = try Self.init(input: puzzleInput())
+		_ = solver.solvePart1()
+		_ = solver.solvePart2()
+	}
 
-func input(year: Int, day: Int) -> String {
-    let inputURL = Bundle.module.url(forResource: "\(year)-\(day)", withExtension: "txt")!
-    let input = try! String(contentsOf: inputURL, encoding: .utf8)
-    return input
+	private static func puzzleInput() -> String {
+		let inputURL = Bundle.module.url(forResource: "\(year)-\(day)", withExtension: "txt")!
+		let input = try! String(contentsOf: inputURL, encoding: .utf8)
+		return input
+	}
 }

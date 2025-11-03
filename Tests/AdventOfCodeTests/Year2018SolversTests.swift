@@ -1,24 +1,26 @@
-import XCTest
+import Testing
 import AdventOfCode
 
-final class Year2018SolversTests: XCTestCase {
-    func testDay1() throws {
-        XCTAssertEqual(Day1Year2018.resultFrequency(changes: [+1, -2, +3, +1]), 3)
-        XCTAssertEqual(Day1Year2018.resultFrequency(changes: [+1, +1, +1]), 3)
-        XCTAssertEqual(Day1Year2018.resultFrequency(changes: [+1, +1, -2]), 0)
-        XCTAssertEqual(Day1Year2018.resultFrequency(changes: [-1, -2, -3]), -6)
+struct Year2018SolversTests {
+    @Test func day1() throws {
+		#expect(Day1Year2018.resultFrequency(changes: [+1, -2, +3, +1]) == 3)
+		#expect(Day1Year2018.resultFrequency(changes: [+1, +1, +1]) == 3)
+		#expect(Day1Year2018.resultFrequency(changes: [+1, +1, -2]) == 0)
+		#expect(Day1Year2018.resultFrequency(changes: [-1, -2, -3]) == -6)
 
-        try testDaySolver(Day1Year2018.self, part1Solution: "484", part2Solution: "367")
+		try Day1Year2018.testSolutions(
+			part1Solution: "484",
+			part2Solution: "367")
     }
 
-    func testDay2() throws {
-        XCTAssertEqual(Day2Year2018.checksumFlags(for: "abcdef"), .init(hasTwo: false, hasThree: false))
-        XCTAssertEqual(Day2Year2018.checksumFlags(for: "bababc"), .init(hasTwo: true, hasThree: true))
-        XCTAssertEqual(Day2Year2018.checksumFlags(for: "abbcde"), .init(hasTwo: true, hasThree: false))
-        XCTAssertEqual(Day2Year2018.checksumFlags(for: "abcccd"), .init(hasTwo: false, hasThree: true))
-        XCTAssertEqual(Day2Year2018.checksumFlags(for: "aabcdd"), .init(hasTwo: true, hasThree: false))
-        XCTAssertEqual(Day2Year2018.checksumFlags(for: "abcdee"), .init(hasTwo: true, hasThree: false))
-        XCTAssertEqual(Day2Year2018.checksumFlags(for: "ababab"), .init(hasTwo: false, hasThree: true))
+    @Test func day2() throws {
+		#expect(Day2Year2018.checksumFlags(for: "abcdef") == .init(hasTwo: false, hasThree: false))
+		#expect(Day2Year2018.checksumFlags(for: "bababc") == .init(hasTwo: true, hasThree: true))
+		#expect(Day2Year2018.checksumFlags(for: "abbcde") == .init(hasTwo: true, hasThree: false))
+		#expect(Day2Year2018.checksumFlags(for: "abcccd") == .init(hasTwo: false, hasThree: true))
+		#expect(Day2Year2018.checksumFlags(for: "aabcdd") == .init(hasTwo: true, hasThree: false))
+		#expect(Day2Year2018.checksumFlags(for: "abcdee") == .init(hasTwo: true, hasThree: false))
+		#expect(Day2Year2018.checksumFlags(for: "ababab") == .init(hasTwo: false, hasThree: true))
 
         let sampleInput = """
             abcde
@@ -29,23 +31,30 @@ final class Year2018SolversTests: XCTestCase {
             axcye
             wvxyz
             """
-        try testDaySolver(Day2Year2018.self, input: sampleInput, part2Solution: "fgij")
+		try Day2Year2018.testSolutions(input: sampleInput, part2Solution: "fgij")
 
-        try testDaySolver(Day2Year2018.self, part1Solution: "6474", part2Solution: "mxhwoglxgeauywfkztndcvjqr")
+		try Day2Year2018.testSolutions(
+			part1Solution: "6474",
+			part2Solution: "mxhwoglxgeauywfkztndcvjqr")
     }
 
-    func testDay3() throws {
+    @Test func day3() throws {
         let sampleInput = """
             #1 @ 1,3: 4x4
             #2 @ 3,1: 4x4
             #3 @ 5,5: 2x2
             """
-        try testDaySolver(Day3Year2018.self, input: sampleInput, part1Solution: "4", part2Solution: "3")
+		try Day3Year2018.testSolutions(
+			input: sampleInput,
+			part1Solution: "4",
+			part2Solution: "3")
 
-        try testDaySolver(Day3Year2018.self, part1Solution: "107663", part2Solution: "1166")
+		try Day3Year2018.testSolutions(
+			part1Solution: "107663",
+			part2Solution: "1166")
     }
 
-    func testDay4() throws {
+    @Test func day4() throws {
         let sampleInput = """
             [1518-11-01 00:00] Guard #10 begins shift
             [1518-11-01 00:05] falls asleep
@@ -65,27 +74,38 @@ final class Year2018SolversTests: XCTestCase {
             [1518-11-05 00:45] falls asleep
             [1518-11-05 00:55] wakes up
             """
-        try testDaySolver(Day4Year2018.self, input: sampleInput, part1Solution: "240", part2Solution: "4455")
+		try Day4Year2018.testSolutions(
+			input: sampleInput,
+			part1Solution: "240",
+			part2Solution: "4455")
 
-        try testDaySolver(Day4Year2018.self, part1Solution: "99911", part2Solution: "65854")
+
+        try Day4Year2018.testSolutions(
+			part1Solution: "99911",
+			part2Solution: "65854")
     }
 
-    func testDay5() throws {
+    @Test func day5() throws {
         let sampleInput = "aA"
-        try testDaySolver(Day5Year2018.self, input: sampleInput, part1Solution: "0")
+        try Day5Year2018.testSolutions(input: sampleInput, part1Solution: "0")
 
         let sampleInput2 = "abBA"
-        try testDaySolver(Day5Year2018.self, input: sampleInput2, part1Solution: "0")
+        try Day5Year2018.testSolutions(input: sampleInput2, part1Solution: "0")
 
         let sampleInput3 = "abAB"
-        try testDaySolver(Day5Year2018.self, input: sampleInput3, part1Solution: "4")
+        try Day5Year2018.testSolutions(input: sampleInput3, part1Solution: "4")
 
         let sampleInput4 = "aabAAB"
-        try testDaySolver(Day5Year2018.self, input: sampleInput4, part1Solution: "6")
+        try Day5Year2018.testSolutions(input: sampleInput4, part1Solution: "6")
 
         let sampleInput5 = "dabAcCaCBAcCcaDA"
-        try testDaySolver(Day5Year2018.self, input: sampleInput5, part1Solution: "10", part2Solution: "4")
+        try Day5Year2018.testSolutions(
+			input: sampleInput5,
+			part1Solution: "10",
+			part2Solution: "4")
 
-        try testDaySolver(Day5Year2018.self, part1Solution: "9116", part2Solution: "6890")
+        try Day5Year2018.testSolutions(
+			part1Solution: "9116",
+			part2Solution: "6890")
     }
 }

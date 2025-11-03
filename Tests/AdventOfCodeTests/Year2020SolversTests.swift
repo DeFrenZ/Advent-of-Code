@@ -1,8 +1,8 @@
-import XCTest
+import Testing
 import AdventOfCode
 
-final class Year2020SolversTests: XCTestCase {
-    func testDay1() throws {
+struct Year2020SolversTests {
+    @Test func day1() throws {
         let sampleInput = """
             1721
             979
@@ -11,23 +11,33 @@ final class Year2020SolversTests: XCTestCase {
             675
             1456
             """
-        try testDaySolver(Day1Year2020.self, input: sampleInput, part1Solution: "514579", part2Solution: "241861950")
-        
-        try testDaySolver(Day1Year2020.self, part1Solution: "1010884", part2Solution: "253928438")
+		try Day1Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "514579",
+			part2Solution: "241861950")
+
+		try Day1Year2020.testSolutions(
+			part1Solution: "1010884",
+			part2Solution: "253928438")
     }
 
-    func testDay2() throws {
+    @Test func day2() throws {
         let sampleInput = """
             1-3 a: abcde
             1-3 b: cdefg
             2-9 c: ccccccccc
             """
-        try testDaySolver(Day2Year2020.self, input: sampleInput, part1Solution: "2", part2Solution: "1")
+        try Day2Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "2",
+			part2Solution: "1")
 
-        try testDaySolver(Day2Year2020.self, part1Solution: "393", part2Solution: "690")
+        try Day2Year2020.testSolutions(
+			part1Solution: "393",
+			part2Solution: "690")
     }
 
-    func testDay3() throws {
+    @Test func day3() throws {
         let sampleInput = """
             ..##.......
             #...#...#..
@@ -41,12 +51,17 @@ final class Year2020SolversTests: XCTestCase {
             #...##....#
             .#..#...#.#
             """
-        try testDaySolver(Day3Year2020.self, input: sampleInput, part1Solution: "7", part2Solution: "336")
+        try Day3Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "7",
+			part2Solution: "336")
 
-        try testDaySolver(Day3Year2020.self, part1Solution: "268", part2Solution: "3093068400")
+        try Day3Year2020.testSolutions(
+			part1Solution: "268",
+			part2Solution: "3093068400")
     }
 
-    func testDay4() throws {
+    @Test func day4() throws {
         let sampleInput = """
             ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
             byr:1937 iyr:2017 cid:147 hgt:183cm
@@ -62,21 +77,21 @@ final class Year2020SolversTests: XCTestCase {
             hcl:#cfa07d eyr:2025 pid:166559648
             iyr:2011 ecl:brn hgt:59in
             """
-        try testDaySolver(Day4Year2020.self, input: sampleInput, part1Solution: "2")
+        try Day4Year2020.testSolutions(input: sampleInput, part1Solution: "2")
 
-        XCTAssertNoThrow(try Day4Year2020.InputElement.parseBirthYear(from: "2002"))
-        XCTAssertThrowsError(try Day4Year2020.InputElement.parseBirthYear(from: "2003"))
-        XCTAssertNoThrow(try Day4Year2020.InputElement.parseLength(from: "60in"))
-        XCTAssertNoThrow(try Day4Year2020.InputElement.parseLength(from: "190cm"))
-        XCTAssertThrowsError(try Day4Year2020.InputElement.parseLength(from: "190in"))
-        XCTAssertThrowsError(try Day4Year2020.InputElement.parseLength(from: "190"))
-        XCTAssertNoThrow(try Day4Year2020.InputElement.parseColor(from: "#123abc"))
-        XCTAssertThrowsError(try Day4Year2020.InputElement.parseColor(from: "#123abz"))
-        XCTAssertThrowsError(try Day4Year2020.InputElement.parseColor(from: "123abc"))
-        XCTAssertNoThrow(try Day4Year2020.InputElement.Passport.EyeColor.parse(from: "brn"))
-        XCTAssertThrowsError(try Day4Year2020.InputElement.Passport.EyeColor.parse(from: "wat"))
-        XCTAssertNoThrow(try Day4Year2020.InputElement.parsePassportID(from: "000000001"))
-        XCTAssertThrowsError(try Day4Year2020.InputElement.parsePassportID(from: "0123456789"))
+		#expect(throws: Never.self) { try Day4Year2020.InputElement.parseBirthYear(from: "2002") }
+		#expect(throws: (any Error).self) { try Day4Year2020.InputElement.parseBirthYear(from: "2003") }
+		#expect(throws: Never.self) { try Day4Year2020.InputElement.parseLength(from: "60in") }
+		#expect(throws: Never.self) { try Day4Year2020.InputElement.parseLength(from: "190cm") }
+		#expect(throws: (any Error).self) { try Day4Year2020.InputElement.parseLength(from: "190in") }
+		#expect(throws: (any Error).self) { try Day4Year2020.InputElement.parseLength(from: "190") }
+		#expect(throws: Never.self) { try Day4Year2020.InputElement.parseColor(from: "#123abc") }
+		#expect(throws: (any Error).self) { try Day4Year2020.InputElement.parseColor(from: "#123abz") }
+		#expect(throws: (any Error).self) { try Day4Year2020.InputElement.parseColor(from: "123abc") }
+		#expect(throws: Never.self) { try Day4Year2020.InputElement.Passport.EyeColor.parse(from: "brn") }
+		#expect(throws: (any Error).self) { try Day4Year2020.InputElement.Passport.EyeColor.parse(from: "wat") }
+		#expect(throws: Never.self) { try Day4Year2020.InputElement.parsePassportID(from: "000000001") }
+		#expect(throws: (any Error).self) { try Day4Year2020.InputElement.parsePassportID(from: "0123456789") }
 
         let sampleInput2 = """
             eyr:1972 cid:100
@@ -93,7 +108,7 @@ final class Year2020SolversTests: XCTestCase {
             eyr:2038 hcl:74454a iyr:2023
             pid:3556412378 byr:2007
             """
-        try testDaySolver(Day4Year2020.self, input: sampleInput2, part2Solution: "0")
+        try Day4Year2020.testSolutions(input: sampleInput2, part2Solution: "0")
 
         let sampleInput3 = """
             pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
@@ -109,27 +124,31 @@ final class Year2020SolversTests: XCTestCase {
 
             iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
             """
-        try testDaySolver(Day4Year2020.self, input: sampleInput3, part2Solution: "4")
+        try Day4Year2020.testSolutions(input: sampleInput3, part2Solution: "4")
 
-        try testDaySolver(Day4Year2020.self, part1Solution: "233", part2Solution: "111")
+        try Day4Year2020.testSolutions(
+			part1Solution: "233",
+			part2Solution: "111")
     }
 
-    func testDay5() throws {
-        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "FBFBBFFRLR").id, 357)
-        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "BFFFBBFRRR").id, 567)
-        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "FFFBBBFRRR").id, 119)
-        XCTAssertEqual(try? Day5Year2020.Seat.parse(from: "BBFFBBFRLL").id, 820)
+    @Test func day5() throws {
+		#expect(try Day5Year2020.Seat.parse(from: "FBFBBFFRLR").id == 357)
+		#expect(try Day5Year2020.Seat.parse(from: "BFFFBBFRRR").id == 567)
+		#expect(try Day5Year2020.Seat.parse(from: "FFFBBBFRRR").id == 119)
+		#expect(try Day5Year2020.Seat.parse(from: "BBFFBBFRLL").id == 820)
 
-        try testDaySolver(Day5Year2020.self, part1Solution: "822", part2Solution: "705")
+        try Day5Year2020.testSolutions(
+			part1Solution: "822",
+			part2Solution: "705")
     }
 
-    func testDay6() throws {
+    @Test func day6() throws {
         let sampleInput = """
             abcx
             abcy
             abcz
             """
-        try testDaySolver(Day6Year2020.self, input: sampleInput, part1Solution: "6")
+        try Day6Year2020.testSolutions(input: sampleInput, part1Solution: "6")
 
         let sampleInput2 = """
             abc
@@ -148,12 +167,15 @@ final class Year2020SolversTests: XCTestCase {
 
             b
             """
-        try testDaySolver(Day6Year2020.self, input: sampleInput2, part1Solution: "11", part2Solution: "6")
+        try Day6Year2020.testSolutions(
+			input: sampleInput2,
+			part1Solution: "11",
+			part2Solution: "6")
 
-        try testDaySolver(Day6Year2020.self, part1Solution: "6763", part2Solution: "3512")
+        try Day6Year2020.testSolutions(part1Solution: "6763", part2Solution: "3512")
     }
 
-    func testDay7() throws {
+    @Test func day7() throws {
         let sampleInput = """
             light red bags contain 1 bright white bag, 2 muted yellow bags.
             dark orange bags contain 3 bright white bags, 4 muted yellow bags.
@@ -165,7 +187,7 @@ final class Year2020SolversTests: XCTestCase {
             faded blue bags contain no other bags.
             dotted black bags contain no other bags.
             """
-        try testDaySolver(Day7Year2020.self, input: sampleInput, part1Solution: "4")
+        try Day7Year2020.testSolutions(input: sampleInput, part1Solution: "4")
 
         let sampleInput2 = """
             shiny gold bags contain 2 dark red bags.
@@ -176,12 +198,14 @@ final class Year2020SolversTests: XCTestCase {
             dark blue bags contain 2 dark violet bags.
             dark violet bags contain no other bags.
             """
-        try testDaySolver(Day7Year2020.self, input: sampleInput2, part2Solution: "126")
+        try Day7Year2020.testSolutions(input: sampleInput2, part2Solution: "126")
 
-        try testDaySolver(Day7Year2020.self, part1Solution: "254", part2Solution: "6006")
+        try Day7Year2020.testSolutions(
+			part1Solution: "254",
+			part2Solution: "6006")
     }
 
-    func testDay8() throws {
+    @Test func day8() throws {
         let sampleInput = """
             nop +0
             acc +1
@@ -193,27 +217,32 @@ final class Year2020SolversTests: XCTestCase {
             jmp -4
             acc +6
             """
-        try testDaySolver(Day8Year2020.self, input: sampleInput, part1Solution: "5", part2Solution: "8")
+        try Day8Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "5",
+			part2Solution: "8")
 
-        try testDaySolver(Day8Year2020.self, part1Solution: "1749", part2Solution: "515")
+        try Day8Year2020.testSolutions(
+			part1Solution: "1749",
+			part2Solution: "515")
     }
 
-    func testDay9() throws {
+    @Test func day9() throws {
         let samplePreamble = (1 ... 25).shuffled()
-        XCTAssertTrue(Day9Year2020.isNumberValid(26, inPreamble: samplePreamble[...]))
-        XCTAssertTrue(Day9Year2020.isNumberValid(49, inPreamble: samplePreamble[...]))
-        XCTAssertFalse(Day9Year2020.isNumberValid(100, inPreamble: samplePreamble[...]))
-        XCTAssertFalse(Day9Year2020.isNumberValid(50, inPreamble: samplePreamble[...]))
+		#expect(Day9Year2020.isNumberValid(26, inPreamble: samplePreamble[...]) == true)
+		#expect(Day9Year2020.isNumberValid(49, inPreamble: samplePreamble[...]) == true)
+		#expect(Day9Year2020.isNumberValid(100, inPreamble: samplePreamble[...]) == false)
+		#expect(Day9Year2020.isNumberValid(50, inPreamble: samplePreamble[...]) == false)
 
         let samplePreamble2 = updated(samplePreamble) {
             let index = $0.firstIndex(of: 20)!
             $0.remove(at: index)
             $0.append(45)
         }
-        XCTAssertTrue(Day9Year2020.isNumberValid(26, inPreamble: samplePreamble2[...]))
-        XCTAssertFalse(Day9Year2020.isNumberValid(65, inPreamble: samplePreamble2[...]))
-        XCTAssertTrue(Day9Year2020.isNumberValid(64, inPreamble: samplePreamble2[...]))
-        XCTAssertTrue(Day9Year2020.isNumberValid(66, inPreamble: samplePreamble2[...]))
+		#expect(Day9Year2020.isNumberValid(26, inPreamble: samplePreamble2[...]) == true)
+		#expect(Day9Year2020.isNumberValid(65, inPreamble: samplePreamble2[...]) == false)
+		#expect(Day9Year2020.isNumberValid(64, inPreamble: samplePreamble2[...]) == true)
+		#expect(Day9Year2020.isNumberValid(66, inPreamble: samplePreamble2[...]) == true)
 
         let sampleInput = """
             35
@@ -238,13 +267,15 @@ final class Year2020SolversTests: XCTestCase {
             576
             """
         let parsedSampleInput = try Day9Year2020.parseInputElements(input: sampleInput)
-        XCTAssertEqual(Day9Year2020.firstInvalidXMASNumber(in: parsedSampleInput, preambleLength: 5), 127)
-        XCTAssertEqual(Day9Year2020.xmasEncryptionWeakness(forNumber: 127, in: parsedSampleInput), 62)
+		#expect(Day9Year2020.firstInvalidXMASNumber(in: parsedSampleInput, preambleLength: 5) == 127)
+		#expect(Day9Year2020.xmasEncryptionWeakness(forNumber: 127, in: parsedSampleInput) == 62)
 
-        try testDaySolver(Day9Year2020.self, part1Solution: "776203571", part2Solution: "104800569")
+        try Day9Year2020.testSolutions(
+			part1Solution: "776203571",
+			part2Solution: "104800569")
     }
 
-    func testDay10() throws {
+    @Test func day10() throws {
         let sampleInput = """
             16
             10
@@ -258,7 +289,10 @@ final class Year2020SolversTests: XCTestCase {
             12
             4
             """
-        try testDaySolver(Day10Year2020.self, input: sampleInput, part1Solution: "35", part2Solution: "8")
+        try Day10Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "35",
+			part2Solution: "8")
 
         let sampleInput2 = """
             28
@@ -293,12 +327,17 @@ final class Year2020SolversTests: XCTestCase {
             10
             3
             """
-        try testDaySolver(Day10Year2020.self, input: sampleInput2, part1Solution: "220", part2Solution: "19208")
+        try Day10Year2020.testSolutions(
+			input: sampleInput2,
+			part1Solution: "220",
+			part2Solution: "19208")
 
-        try testDaySolver(Day10Year2020.self, part1Solution: "2432", part2Solution: "453551299002368")
+        try Day10Year2020.testSolutions(
+			part1Solution: "2432",
+			part2Solution: "453551299002368")
     }
 
-    func testDay11() throws {
+    @Test func day11() throws {
         let sampleInput = """
             L.LL.LL.LL
             LLLLLLL.LL
@@ -311,12 +350,17 @@ final class Year2020SolversTests: XCTestCase {
             L.LLLLLL.L
             L.LLLLL.LL
             """
-        try testDaySolver(Day11Year2020.self, input: sampleInput, part1Solution: "37", part2Solution: "26")
+        try Day11Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "37",
+			part2Solution: "26")
 
-        try testDaySolver(Day11Year2020.self, part1Solution: "2470", part2Solution: "2259")
+        try Day11Year2020.testSolutions(
+			part1Solution: "2470",
+			part2Solution: "2259")
     }
 
-    func testDay12() throws {
+    @Test func day12() throws {
         let sampleInput = """
             F10
             N3
@@ -324,35 +368,45 @@ final class Year2020SolversTests: XCTestCase {
             R90
             F11
             """
-        try testDaySolver(Day12Year2020.self, input: sampleInput, part1Solution: "25", part2Solution: "286")
+        try Day12Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "25",
+			part2Solution: "286")
 
-        try testDaySolver(Day12Year2020.self, part1Solution: "2847", part2Solution: "29839")
+        try Day12Year2020.testSolutions(
+			part1Solution: "2847",
+			part2Solution: "29839")
     }
 
-    func testDay13() throws {
+    @Test func day13() throws {
         let sampleInput = """
             939
             7,13,x,x,59,x,31,19
             """
-        try testDaySolver(Day13Year2020.self, input: sampleInput, part1Solution: "295", part2Solution: "1068781")
+        try Day13Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "295",
+			part2Solution: "1068781")
 
-        try testDaySolver(Day13Year2020.self, input: "0\n17,x,13,19", part2Solution: "3417")
-        try testDaySolver(Day13Year2020.self, input: "0\n67,7,59,61", part2Solution: "754018")
-        try testDaySolver(Day13Year2020.self, input: "0\n67,x,7,59,61", part2Solution: "779210")
-        try testDaySolver(Day13Year2020.self, input: "0\n67,7,x,59,61", part2Solution: "1261476")
-        try testDaySolver(Day13Year2020.self, input: "0\n1789,37,47,1889", part2Solution: "1202161486")
+        try Day13Year2020.testSolutions(input: "0\n17,x,13,19", part2Solution: "3417")
+        try Day13Year2020.testSolutions(input: "0\n67,7,59,61", part2Solution: "754018")
+        try Day13Year2020.testSolutions(input: "0\n67,x,7,59,61", part2Solution: "779210")
+        try Day13Year2020.testSolutions(input: "0\n67,7,x,59,61", part2Solution: "1261476")
+        try Day13Year2020.testSolutions(input: "0\n1789,37,47,1889", part2Solution: "1202161486")
 
-        try testDaySolver(Day13Year2020.self, part1Solution: "4782", part2Solution: "1118684865113056")
+        try Day13Year2020.testSolutions(
+			part1Solution: "4782",
+			part2Solution: "1118684865113056")
     }
 
-    func testDay14() throws {
+    @Test func day14() throws {
         let sampleInput = """
             mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
             mem[8] = 11
             mem[7] = 101
             mem[8] = 0
             """
-        try testDaySolver(Day14Year2020.self, input: sampleInput, part1Solution: "165")
+        try Day14Year2020.testSolutions(input: sampleInput, part1Solution: "165")
 
         let sampleInput2 = """
             mask = 000000000000000000000000000000X1001X
@@ -360,24 +414,49 @@ final class Year2020SolversTests: XCTestCase {
             mask = 00000000000000000000000000000000X0XX
             mem[26] = 1
             """
-        try testDaySolver(Day14Year2020.self, input: sampleInput2, part2Solution: "208")
+        try Day14Year2020.testSolutions(input: sampleInput2, part2Solution: "208")
 
-        try testDaySolver(Day14Year2020.self, part1Solution: "17028179706934", part2Solution: "3683236147222")
+        try Day14Year2020.testSolutions(
+			part1Solution: "17028179706934",
+			part2Solution: "3683236147222")
     }
 
-    func testDay15() throws {
-        try testDaySolver(Day15Year2020.self, input: "0,3,6", part1Solution: "436", part2Solution: "175594")
-        try testDaySolver(Day15Year2020.self, input: "1,3,2", part1Solution: "1", part2Solution: "2578")
-        try testDaySolver(Day15Year2020.self, input: "2,1,3", part1Solution: "10", part2Solution: "3544142")
-        try testDaySolver(Day15Year2020.self, input: "1,2,3", part1Solution: "27", part2Solution: "261214")
-        try testDaySolver(Day15Year2020.self, input: "2,3,1", part1Solution: "78", part2Solution: "6895259")
-        try testDaySolver(Day15Year2020.self, input: "3,2,1", part1Solution: "438", part2Solution: "18")
-        try testDaySolver(Day15Year2020.self, input: "3,1,2", part1Solution: "1836", part2Solution: "362")
+    @Test func day15() throws {
+        try Day15Year2020.testSolutions(
+			input: "0,3,6",
+			part1Solution: "436",
+			part2Solution: "175594")
+        try Day15Year2020.testSolutions(
+			input: "1,3,2",
+			part1Solution: "1",
+			part2Solution: "2578")
+        try Day15Year2020.testSolutions(
+			input: "2,1,3",
+			part1Solution: "10",
+			part2Solution: "3544142")
+        try Day15Year2020.testSolutions(
+			input: "1,2,3",
+			part1Solution: "27",
+			part2Solution: "261214")
+        try Day15Year2020.testSolutions(
+			input: "2,3,1",
+			part1Solution: "78",
+			part2Solution: "6895259")
+        try Day15Year2020.testSolutions(
+			input: "3,2,1",
+			part1Solution: "438",
+			part2Solution: "18")
+        try Day15Year2020.testSolutions(
+			input: "3,1,2",
+			part1Solution: "1836",
+			part2Solution: "362")
 
-        try testDaySolver(Day15Year2020.self, part1Solution: "1280", part2Solution: "651639")
+        try Day15Year2020.testSolutions(
+			part1Solution: "1280",
+			part2Solution: "651639")
     }
 
-    func testDay16() throws {
+    @Test func day16() throws {
         let sampleInput = """
             class: 1-3 or 5-7
             row: 6-11 or 33-44
@@ -392,7 +471,7 @@ final class Year2020SolversTests: XCTestCase {
             55,2,20
             38,6,12
             """
-        try testDaySolver(Day16Year2020.self, input: sampleInput, part1Solution: "71")
+        try Day16Year2020.testSolutions(input: sampleInput, part1Solution: "71")
 
         let sampleInput2 = """
             class: 0-1 or 4-19
@@ -407,34 +486,61 @@ final class Year2020SolversTests: XCTestCase {
             15,1,5
             5,14,9
             """
-        XCTAssertEqual(try Day16Year2020(input: sampleInput2).deducedFields(), ["row", "class", "seat"])
+		#expect(try Day16Year2020(input: sampleInput2).deducedFields() == ["row", "class", "seat"])
 
-        try testDaySolver(Day16Year2020.self, part1Solution: "25972", part2Solution: "622670335901")
+        try Day16Year2020.testSolutions(
+			part1Solution: "25972",
+			part2Solution: "622670335901")
     }
 
-    func testDay17() throws {
+    @Test func day17() throws {
         let sampleInput = """
             .#.
             ..#
             ###
             """
-        try testDaySolver(Day17Year2020.self, input: sampleInput, part1Solution: "112", part2Solution: "848")
+        try Day17Year2020.testSolutions(
+			input: sampleInput,
+			part1Solution: "112",
+			part2Solution: "848")
 
-        try testDaySolver(Day17Year2020.self, part1Solution: "324", part2Solution: "1836")
+        try Day17Year2020.testSolutions(
+			part1Solution: "324",
+			part2Solution: "1836")
     }
 
-    func testDay18() throws {
-        try testDaySolver(Day18Year2020.self, input: "1 + 2 * 3 + 4 * 5 + 6", part1Solution: "71", part2Solution: "231")
-        try testDaySolver(Day18Year2020.self, input: "1 + (2 * 3) + (4 * (5 + 6))", part1Solution: "51", part2Solution: "51")
-        try testDaySolver(Day18Year2020.self, input: "2 * 3 + (4 * 5)", part1Solution: "26", part2Solution: "46")
-        try testDaySolver(Day18Year2020.self, input: "5 + (8 * 3 + 9 + 3 * 4 * 3)", part1Solution: "437", part2Solution: "1445")
-        try testDaySolver(Day18Year2020.self, input: "5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))", part1Solution: "12240", part2Solution: "669060")
-        try testDaySolver(Day18Year2020.self, input: "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", part1Solution: "13632", part2Solution: "23340")
+    @Test func day18() throws {
+        try Day18Year2020.testSolutions(
+			input: "1 + 2 * 3 + 4 * 5 + 6",
+			part1Solution: "71",
+			part2Solution: "231")
+        try Day18Year2020.testSolutions(
+			input: "1 + (2 * 3) + (4 * (5 + 6))",
+			part1Solution: "51",
+			part2Solution: "51")
+        try Day18Year2020.testSolutions(
+			input: "2 * 3 + (4 * 5)",
+			part1Solution: "26",
+			part2Solution: "46")
+        try Day18Year2020.testSolutions(
+			input: "5 + (8 * 3 + 9 + 3 * 4 * 3)",
+			part1Solution: "437",
+			part2Solution: "1445")
+        try Day18Year2020.testSolutions(
+			input: "5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))",
+			part1Solution: "12240",
+			part2Solution: "669060")
+        try Day18Year2020.testSolutions(
+			input: "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2",
+			part1Solution: "13632",
+			part2Solution: "23340")
 
-        try testDaySolver(Day18Year2020.self, part1Solution: "11297104473091", part2Solution: "185348874183674")
+        try Day18Year2020.testSolutions(
+			part1Solution: "11297104473091",
+			part2Solution: "185348874183674")
     }
 
-    func testDay19() throws {
+    @Test func day19() throws {
         let sampleInput = """
             0: 4 1 5
             1: 2 3 | 3 2
@@ -449,7 +555,7 @@ final class Year2020SolversTests: XCTestCase {
             aaabbb
             aaaabbb
             """
-        try testDaySolver(Day19Year2020.self, input: sampleInput, part1Solution: "2")
+        try Day19Year2020.testSolutions(input: sampleInput, part1Solution: "2")
 
         let sampleInput2 = """
             42: 9 14 | 10 1
@@ -500,14 +606,17 @@ final class Year2020SolversTests: XCTestCase {
             babaaabbbaaabaababbaabababaaab
             aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba
             """
-        try testDaySolver(Day19Year2020.self, input: sampleInput2, part1Solution: "3", part2Solution: "12")
+        try Day19Year2020.testSolutions(
+			input: sampleInput2,
+			part1Solution: "3",
+			part2Solution: "12")
 
-        try testDaySolver(Day19Year2020.self, part1Solution: "176", part2Solution: "352")
+        try Day19Year2020.testSolutions(
+			part1Solution: "176",
+			part2Solution: "352")
     }
 
-    func testDay20() throws {
-		try XCTSkipIf(true, "Not implemented yet")
-
+	@Test(.disabled("Not implemented yet")) func day20() throws {
         let sampleInput = """
             Tile 2311:
             ..##.#..#.
@@ -617,6 +726,6 @@ final class Year2020SolversTests: XCTestCase {
             ..#.......
             ..#.###...
             """
-        try testDaySolver(Day20Year2020.self, input: sampleInput, part1Solution: "20899048083289")
+        try Day20Year2020.testSolutions(input: sampleInput, part1Solution: "20899048083289")
     }
 }
