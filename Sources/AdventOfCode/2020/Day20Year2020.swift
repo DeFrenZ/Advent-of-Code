@@ -260,9 +260,10 @@ extension Day20Year2020.Tile.Pixel: ParseableFromString {}
 
 extension Day20Year2020 {
     static func assembled(_ tiles: [Tile]) -> Matrix2<Tile.ID> {
-        let tilesPermutationsByID = Dictionary(indexingUniqueValues: tiles)
-            .mapValues({ $0.imageDataPermutations() })
-        fatalError()
+		try! .init([[1]])
+		// TODO: Implement
+//        let tilesPermutationsByID = Dictionary(indexingUniqueValues: tiles)
+//            .mapValues({ $0.imageDataPermutations() })
     }
 
     static func corners <T> (of matrix: Matrix2<T>) -> [T] {
