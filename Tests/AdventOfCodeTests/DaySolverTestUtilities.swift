@@ -7,7 +7,7 @@ extension XCTestCase {
         input: String = input(year: Solver.year, day: Solver.day),
         part1Solution: String? = nil,
         part2Solution: String? = nil,
-        file: StaticString = #file,
+		file: StaticString = #filePath,
         line: UInt = #line)
     throws {
         let solver = try Solver(input: input)
@@ -23,7 +23,7 @@ extension XCTestCase {
         }
     }
 
-    func executeDaySolver <Solver: DaySolver> (_ solverType: Solver.Type, file: StaticString = #file, line: UInt = #line) {
+	func executeDaySolver <Solver: DaySolver> (_ solverType: Solver.Type, file: StaticString = #filePath, line: UInt = #line) {
         let inputFromFile = input(year: Solver.year, day: Solver.day)
         guard let solver = try? Solver(input: inputFromFile) else {
             XCTFail(file: file, line: line)
