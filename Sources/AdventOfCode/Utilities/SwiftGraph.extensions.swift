@@ -40,7 +40,7 @@ private struct AllPathsSearchState<Vertex: Hashable> {
     typealias Path = [Vertex]
 }
 
-extension UnweightedEdge: Hashable {
+extension UnweightedEdge: @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(u)
         hasher.combine(v)
@@ -48,7 +48,7 @@ extension UnweightedEdge: Hashable {
     }
 }
 
-extension WeightedEdge: Hashable where W: Hashable {
+extension WeightedEdge: @retroactive Hashable where W: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(u)
         hasher.combine(v)
