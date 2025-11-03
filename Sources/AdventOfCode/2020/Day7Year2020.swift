@@ -93,29 +93,29 @@ public final class Day7Year2020: DaySolverWithInputs {
 
 // MARK: - Input
 
-public extension Day7Year2020 {
-    struct Rule {
-        var bagColor: BagColor
-        var containedBags: [BagColor: Int]
+extension Day7Year2020 {
+    public struct Rule {
+        public var bagColor: BagColor
+        public var containedBags: [BagColor: Int]
 
-        typealias BagColor = Day7Year2020.BagColor
-        typealias BagColorCountPair = Day7Year2020.BagColorCountPair
+        public typealias BagColor = Day7Year2020.BagColor
+        public typealias BagColorCountPair = Day7Year2020.BagColorCountPair
     }
 
-	struct BagColor: Hashable, Sendable {
-        var colorName: String
+	public struct BagColor: Hashable, Sendable {
+        public var colorName: String
 
         static let shinyGold: Self = .init(colorName: "shiny gold")
     }
 
-    struct BagColorCountPair {
-        var bagColor: BagColor
-        var count: Int
+    public struct BagColorCountPair {
+        public var bagColor: BagColor
+        public var count: Int
 
-        typealias BagColor = Day7Year2020.BagColor
+        public typealias BagColor = Day7Year2020.BagColor
     }
 
-    typealias InputElement = Rule
+    public typealias InputElement = Rule
 }
 
 extension Day7Year2020.Rule: ParseableFromString {
@@ -130,17 +130,23 @@ extension Day7Year2020.Rule: ParseableFromString {
         return "\(bagColor) contain \(contentsDescription)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
-        let bagColor = try scanner.scan(BagColor.self)
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
+        let bagColor = try mapError(
+			{ () throws(BagColor.ParseError) in try scanner.scan(BagColor.self) },
+			transform: ParseError.onBagColor)
         _ = try scanner.scanString("s contain ") ?! ParseError.noPluralOrContain(scanner.remainingString)
         if scanner.scanString("no other bags.") != nil {
             return Self(bagColor: bagColor, containedBags: [:])
         }
 
-        let contents = try scanner.scanAll(
-            BagColorCountPair.self,
-            separators: [", "],
-            stopAt: ["."])
+        let contents = try mapError(
+			{ () throws(BagColorCountPair.ParseError) in
+				try scanner.scanAll(
+					BagColorCountPair.self,
+					separators: [", "],
+					stopAt: ["."])
+			},
+			transform: ParseError.onBagColorCountPair)
         _ = try scanner.scanString(".") ?! ParseError.noPeriod(scanner.remainingString)
 
         let containedBags = Dictionary(grouping: contents, by: \.bagColor)
@@ -148,7 +154,9 @@ extension Day7Year2020.Rule: ParseableFromString {
         return Self(bagColor: bagColor, containedBags: containedBags)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
+		case onBagColor(BagColor.ParseError)
+		case onBagColorCountPair(BagColorCountPair.ParseError)
         case noPluralOrContain(String)
         case noPeriod(String)
     }
@@ -159,14 +167,14 @@ extension Day7Year2020.BagColor: ParseableFromString {
         "\(colorName) bag"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Day7Year2020.BagColor {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Day7Year2020.BagColor {
         let rawColor = try scanner.scanUpToString(" bag") ?! ParseError.noBagColor(scanner.remainingString)
         _ = try scanner.scanString(" bag") ?! ParseError.noBag(scanner.remainingString)
 
         return Self(colorName: rawColor)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case noBagColor(String)
         case noBag(String)
     }
@@ -177,10 +185,12 @@ extension Day7Year2020.BagColorCountPair: ParseableFromString {
         "\(count) \(bagColor)\(count > 1 ? "s" : "")"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         let count = try scanner.scanInt() ?! ParseError.doesNotStartWithANumber(scanner.remainingString)
         _ = try scanner.scanString(" ") ?! ParseError.noSpace(scanner.remainingString)
-        let color = try scanner.scan(BagColor.self)
+        let color = try mapError(
+			{ () throws(BagColor.ParseError) in try scanner.scan(BagColor.self) },
+			transform: ParseError.onBagColor)
         if count > 1 {
             _ = try scanner.scanString("s") ?! ParseError.noPlural(scanner.remainingString)
         }
@@ -188,9 +198,10 @@ extension Day7Year2020.BagColorCountPair: ParseableFromString {
         return Self(bagColor: color, count: count)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case doesNotStartWithANumber(String)
         case noSpace(String)
+		case onBagColor(BagColor.ParseError)
         case noPlural(String)
     }
 }

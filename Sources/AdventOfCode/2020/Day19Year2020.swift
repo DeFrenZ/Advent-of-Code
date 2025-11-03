@@ -208,11 +208,14 @@ extension Day19Year2020.Input: ParseableFromString {
         """
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
-        let rules = try scanner.scanAll(Day19Year2020.Rule.self, separators: ["\n"], stopAt: ["\n\n"])
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
+        let rules = try mapError(
+			{ () throws(Rule.ParseError) in try scanner.scanAll(Rule.self, separators: ["\n"], stopAt: ["\n\n"]) },
+			transform: ParseError.notAValidRule)
+
         _ = try scanner.scanString("\n\n") ?! ParseError.noSplit(scanner.remainingString)
         let messages = try scanner.scanAll(
-            { scanner in
+            { scanner throws(ParseError) in
                 try scanner.scanUpToString("\n") ?! ParseError.noMessage(scanner.remainingString)
             },
             separators: ["\n"],
@@ -221,10 +224,13 @@ extension Day19Year2020.Input: ParseableFromString {
         return .init(rules: rules, messages: messages)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
+		case notAValidRule(Rule.ParseError)
         case noSplit(String)
         case noMessage(String)
     }
+
+	public typealias Rule = Day19Year2020.Rule
 }
 
 extension Day19Year2020.Rule: ParseableFromString {
@@ -232,17 +238,20 @@ extension Day19Year2020.Rule: ParseableFromString {
         "\(id): \(pattern.description)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         let id = try scanner.scanInt() ?! ParseError.noID(scanner.remainingString)
         _ = try scanner.scanString(": ") ?! ParseError.noPeriod(scanner.remainingString)
-        let pattern = try scanner.scan(Pattern.self)
+        let pattern = try mapError(
+			{ () throws(Pattern.ParseError) in try scanner.scan(Pattern.self) },
+			transform: ParseError.notAValidPattern)
 
         return .init(id: id, pattern: pattern)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case noID(String)
         case noPeriod(String)
+		case notAValidPattern(Pattern.ParseError)
     }
 }
 
@@ -258,31 +267,34 @@ extension Day19Year2020.Rule.Pattern: ParseableFromString {
         }
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         if scanner.peekUnicodeScalar() == "\"" {
             _ = scanner.scanString("\"")
             let character = try scanner.scanCharacter() ?! ParseError.noCharacter(scanner.remainingString)
             _ = try scanner.scanString("\"") ?! ParseError.noClosingQuote(scanner.remainingString)
             return .character(character)
         } else {
-            let subRules: [[Day19Year2020.Rule.ID]] = try scanner.scanAll(
-                { scanner in
-                    let ids = try scanner.scanAll(
-                        Day19Year2020.Rule.ID.self,
-                        separators: [" "],
-                        stopAt: [" | ", "\n"])
-                    return ids
-                },
-                separators: [" | "],
-                stopAt: ["\n"])
+            let subRules: [[Rule.ID]] = try mapError(
+				{ () throws(Rule.ID.ParseError) in
+					try scanner.scanAll(
+						{ scanner throws(Rule.ID.ParseError) in
+							try scanner.scanAll(Rule.ID.self, separators: [" "], stopAt: [" | ", "\n"])
+						},
+						separators: [" | "],
+						stopAt: ["\n"])
+				},
+				transform: ParseError.notAValidRuleID)
             return .subRules(subRules)
         }
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case noCharacter(String)
         case noClosingQuote(String)
+		case notAValidRuleID(Rule.ID.ParseError)
     }
+
+	public typealias Rule = Day19Year2020.Rule
 }
 
 // MARK: - Logic

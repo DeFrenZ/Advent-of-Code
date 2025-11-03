@@ -169,10 +169,12 @@ extension Day14Year2020.Instruction: ParseableFromString {
         }
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         if scanner.scanString("mask") != nil {
             _ = try scanner.scanString(" = ") ?! ParseError.notAValidMaskInstruction(scanner.remainingString)
-            let mask = try scanner.scanAll(Bit.self) ?! ParseError.notAValidMask(scanner.remainingString)
+            let mask = try mapError(
+				{ () throws(Bit.ParseError) in try scanner.scanAll(Bit.self) },
+				transform: ParseError.notAValidMask)
             guard mask.count == 36 else { throw ParseError.notAValidMaskLength(mask) }
             return .updateMask(mask)
         } else if scanner.scanString("mem") != nil {
@@ -185,9 +187,9 @@ extension Day14Year2020.Instruction: ParseableFromString {
         throw ParseError.notAValidInstruction(scanner.remainingString)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case notAValidMaskInstruction(String)
-        case notAValidMask(String)
+		case notAValidMask(Bit.ParseError)
         case notAValidMaskLength([Bit])
         case notAValidWriteInstruction(String)
         case notAValidWriteAddress(String)

@@ -1,7 +1,8 @@
 import Foundation
 
 public protocol ParseableFromString {
-    static func parse(on scanner: Scanner) throws -> Self
+	associatedtype ParseError: Error
+    static func parse(on scanner: Scanner) throws(ParseError) -> Self
 }
 
 extension ParseableFromString {
@@ -10,7 +11,7 @@ extension ParseableFromString {
         self = parsed
     }
 
-    public static func parse(from string: String) throws -> Self {
+    public static func parse(from string: String) throws(ParseError) -> Self {
         let scanner = Scanner(string: string)
         scanner.charactersToBeSkipped = nil
         return try Self.parse(on: scanner)
@@ -27,7 +28,7 @@ extension Sequence where Element: CustomStringConvertible, Element: ParseableFro
 // MARK: - Scanner
 
 extension Scanner {
-    func scan <P: ParseableFromString> (_ type: P.Type) throws -> P {
+	func scan <P: ParseableFromString> (_ type: P.Type) throws(P.ParseError) -> P {
         try P.parse(on: self)
     }
 
@@ -35,18 +36,18 @@ extension Scanner {
         _ type: P.Type,
         separators: Set<String> = [],
         stopAt terminators: Set<String> = ["\n"]
-    ) throws -> [P] {
+	) throws(P.ParseError) -> [P] {
         try scanAll(
             P.parse(on:),
             separators: separators,
             stopAt: terminators)
     }
 
-    func scanAll <P> (
-        _ scanElement: (Scanner) throws -> P,
+	func scanAll <P, E: Error> (
+        _ scanElement: (Scanner) throws(E) -> P,
         separators: Set<String> = [],
         stopAt terminators: Set<String> = ["\n"]
-    ) rethrows -> [P] {
+    ) throws(E) -> [P] {
         var parsed: [P] = []
         while !isAtEnd {
             try parsed.append(scanElement(self))
@@ -67,7 +68,7 @@ extension Scanner {
 // MARK: - stdlib Types Conformances
 
 extension Character: ParseableFromString {
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         try scanner.scanCharacter() ?! ParseError.doesNotStartWithACharacter(scanner.remainingString)
     }
 
@@ -77,7 +78,7 @@ extension Character: ParseableFromString {
 }
 
 extension String: ParseableFromString {
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         try scanner.scanUpToString("\0") ?! ParseError.doesNotStartWithAString(scanner.remainingString)
     }
 
@@ -87,7 +88,7 @@ extension String: ParseableFromString {
 }
 
 extension Int: ParseableFromString {
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         try scanner.scanInt() ?! ParseError.doesNotStartWithAnInt(scanner.remainingString)
     }
 
@@ -97,7 +98,7 @@ extension Int: ParseableFromString {
 }
 
 extension Array: ParseableFromString where Element: ParseableFromString {
-    public static func parse(on scanner: Scanner) throws -> Self {
+	public static func parse(on scanner: Scanner) throws(Element.ParseError) -> Self {
         try scanner.scanAll(Element.self)
     }
 }

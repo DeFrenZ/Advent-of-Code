@@ -112,7 +112,7 @@ extension Day3Year2018.Claim: ParseableFromString {
         "#\(id) @ \(rect.x.lowerBound),\(rect.y.lowerBound): \(rect.x.count)x\(rect.y.count)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         _ = try scanner.scanString("#") ?! ParseError.onHash
         let id = try scanner.scanInt() ?! ParseError.onID
         _ = try scanner.scanString(" @ ") ?! ParseError.onAt
@@ -128,7 +128,7 @@ extension Day3Year2018.Claim: ParseableFromString {
         return Self(id: id, rect: rect)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case onHash
         case onID
         case onAt

@@ -145,7 +145,7 @@ extension Day8Year2020.Instruction: ParseableFromString {
         return "\(operation) \(argumentDescription)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         let rawOperation = try scanner.scanUpToString(" ") ?! ParseError.onOperation(scanner.remainingString)
         let operation = try Operation(rawValue: rawOperation) ?! ParseError.notAValidOperation(raw: rawOperation)
         _ = try scanner.scanString(" ") ?! ParseError.onSpace(scanner.remainingString)
@@ -154,7 +154,7 @@ extension Day8Year2020.Instruction: ParseableFromString {
         return Self(operation: operation, argument: argument)
     }
 
-    enum ParseError: Error {
+    public enum ParseError: Error {
         case onOperation(String)
         case notAValidOperation(raw: String)
         case onSpace(String)

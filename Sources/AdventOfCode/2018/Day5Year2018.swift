@@ -91,7 +91,7 @@ extension Day5Year2018.Unit: ParseableFromString {
         return String(character)
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         let character = try scanner.scanCharacter() ?! ParseError.nothingToScan
         let codePoint = try character.utf8.onlyValue ?! ParseError.notACodePoint(character)
         switch codePoint {

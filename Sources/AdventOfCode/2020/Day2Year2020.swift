@@ -86,8 +86,10 @@ extension Day2Year2020.InputElement: ParseableFromString {
         "\(policy): \(password)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
-        let policy = try PasswordPolicy.parse(on: scanner)
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
+        let policy = try mapError(
+			{ () throws(ParseError.PasswordPolicyParseError) in try PasswordPolicy.parse(on: scanner) },
+			transform: ParseError.onPasswordPolicy)
         guard scanner.scanString(": ") != nil else { throw ParseError.onColonSpace }
         guard let password = scanner.scanUpToString("\n") else { throw ParseError.onPassword }
 
@@ -95,8 +97,18 @@ extension Day2Year2020.InputElement: ParseableFromString {
     }
 
     public enum ParseError: Error {
+		case onPasswordPolicy(PasswordPolicyParseError)
         case onColonSpace
         case onPassword
+
+		public enum PasswordPolicyParseError: Error {
+			case onLowerBound
+			case onSeparator
+			case onUpperBound
+			case invalidBounds(lower: Int, upper: Int)
+			case onSpace
+			case onCharacter
+		}
     }
 }
 
@@ -105,7 +117,7 @@ extension Day2Year2020.PasswordPolicy: ParseableFromString {
         "\(appearanceTimes.lowerBound)-\(appearanceTimes.upperBound) \(character)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         guard let lowerBound = scanner.scanInt() else { throw ParseError.onLowerBound }
         guard scanner.scanString("-") != nil else { throw ParseError.onSeparator }
         guard let upperBound = scanner.scanInt() else { throw ParseError.onUpperBound }
@@ -118,14 +130,7 @@ extension Day2Year2020.PasswordPolicy: ParseableFromString {
             character: character)
     }
 
-    public enum ParseError: Error {
-        case onLowerBound
-        case onSeparator
-        case onUpperBound
-        case invalidBounds(lower: Int, upper: Int)
-        case onSpace
-        case onCharacter
-    }
+	public typealias ParseError = Day2Year2020.InputElement.ParseError.PasswordPolicyParseError
 }
 
 // MARK: - Logic

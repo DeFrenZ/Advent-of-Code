@@ -115,12 +115,14 @@ extension Day4Year2018.RecordEntry: ParseableFromString {
         "[\(Self.dateFormatter.string(from: date))] \(event)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         _ = try scanner.scanString("[") ?! ParseError.onOpenSquareBracket(scanner.remainingString)
         let dateString = try scanner.scanUpToString("]") ?! ParseError.onDateString(scanner.remainingString)
         let date = try dateFormatter.date(from: dateString) ?! ParseError.onDateFormatting(dateString: dateString)
         _ = try scanner.scanString("] ") ?! ParseError.onClosedSquareBracket(scanner.remainingString)
-        let event = try scanner.scan(Event.self)
+		let event = try mapError(
+			{ () throws(ParseError.EventParseError) in try scanner.scan(Event.self) },
+			transform: ParseError.onEvent)
 
         return Self(date: date, event: event)
     }
@@ -130,6 +132,14 @@ extension Day4Year2018.RecordEntry: ParseableFromString {
         case onDateString(String)
         case onDateFormatting(dateString: String)
         case onClosedSquareBracket(String)
+		case onEvent(EventParseError)
+
+		public enum EventParseError: Error {
+			case notAValidCase(String)
+			case notValidForFallsAsleep(String)
+			case notValidForWakesUp(String)
+			case notValidForChangeShift(String)
+		}
     }
 
     private static let dateFormatter = DateFormatter.apiDateFormatter(format: "yyyy-MM-dd HH:mm")
@@ -147,7 +157,7 @@ extension Day4Year2018.RecordEntry.Event: ParseableFromString {
         }
     }
 
-    static func parse(on scanner: Scanner) throws -> Self {
+    static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         switch scanner.remainingString.first {
         case "f":
             _ = try scanner.scanString("falls asleep") ?! ParseError.notValidForFallsAsleep(scanner.remainingString)
@@ -167,12 +177,7 @@ extension Day4Year2018.RecordEntry.Event: ParseableFromString {
         }
     }
 
-    enum ParseError: Error {
-        case notAValidCase(String)
-        case notValidForFallsAsleep(String)
-        case notValidForWakesUp(String)
-        case notValidForChangeShift(String)
-    }
+	typealias ParseError = Day4Year2018.RecordEntry.ParseError.EventParseError
 }
 
 // MARK: - Logic

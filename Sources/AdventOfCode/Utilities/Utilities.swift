@@ -65,9 +65,17 @@ public func updated <T> (_ value: T, with update: (inout T) -> Void) -> T {
 
 infix operator ?!: NilCoalescingPrecedence
 
-public func ?! <T> (lhs: T?, rhs: Error) throws -> T {
+public func ?! <T, E: Error> (lhs: T?, rhs: E) throws(E) -> T {
     guard let value = lhs else { throw rhs }
     return value
+}
+
+public func mapError <T, E1: Error, E2: Error> (_ body: () throws(E1) -> T, transform: (E1) -> E2) throws(E2) -> T {
+	do {
+		return try body()
+	} catch {
+		throw transform(error)
+	}
 }
 
 struct UndefinedError: Error {}
@@ -76,7 +84,7 @@ struct UndefinedError: Error {}
 
 infix operator |>: FunctionArrowPrecedence
 
-public func |> <T, U> (lhs: T, rhs: (T) throws -> U) rethrows -> U {
+public func |> <T, U, E: Error> (lhs: T, rhs: (T) throws(E) -> U) throws(E) -> U {
     try rhs(lhs)
 }
 

@@ -148,7 +148,7 @@ extension Day18Year2020.RawExpression.Token: ParseableFromString {
         }
     }
 
-    static func parse(on scanner: Scanner) throws -> Self {
+    static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         if let number = scanner.scanInt() {
             return .number(number)
         } else if scanner.scanString("+") != nil {
@@ -318,7 +318,7 @@ extension Day18Year2020.Expression {
         }
     }
 
-    enum ParsingState {
+	enum ParsingState: Sendable {
         case start
         case term(Expression)
         case mult(lhs: Expression, rhs: Expression)

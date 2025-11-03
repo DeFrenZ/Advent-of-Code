@@ -105,23 +105,23 @@ public final class Day16Year2020: DaySolverWithSingleInput {
 
 // MARK: - Input
 
-public extension Day16Year2020 {
-    struct Input {
-        var rules: [FieldRule]
-        var yourTicket: Ticket
-        var nearbyTickets: [Ticket]
+extension Day16Year2020 {
+    public struct Input {
+        public var rules: [FieldRule]
+        public var yourTicket: Ticket
+        public var nearbyTickets: [Ticket]
 
-        typealias FieldRule = Day16Year2020.FieldRule
-        typealias Ticket = Day16Year2020.Ticket
+        public typealias FieldRule = Day16Year2020.FieldRule
+        public typealias Ticket = Day16Year2020.Ticket
     }
 
-    struct FieldRule: Hashable {
-        var ruleName: String
-        var ranges: [ClosedRange<Int>]
+    public struct FieldRule: Hashable {
+        public var ruleName: String
+        public var ranges: [ClosedRange<Int>]
     }
 
-    struct Ticket {
-        var fieldsValues: [Int]
+    public struct Ticket {
+        public var fieldsValues: [Int]
     }
 }
 
@@ -142,19 +142,30 @@ extension Day16Year2020.Input: ParseableFromString {
             """
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
-        let rules = try scanner.scanAll(FieldRule.self, separators: ["\n"], stopAt: ["\n\n"])
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
+        let rules = try mapError(
+			{ () throws(FieldRule.ParseError) in
+				try scanner.scanAll(FieldRule.self, separators: ["\n"], stopAt: ["\n\n"])
+			},
+			transform: ParseError.notAValidFieldRule)
         _ = try scanner.scanString("\n\nyour ticket:\n") ?! ParseError.notAValidYourTicketHeader(scanner.remainingString)
-        let yourTicket = try scanner.scan(Ticket.self)
+        let yourTicket = try mapError(
+			{ () throws(Ticket.ParseError) in try scanner.scan(Ticket.self) },
+			transform: ParseError.notAValidTicket)
         _ = try scanner.scanString("\n\nnearby tickets:\n") ?! ParseError.notAValidNearbyTicketsHeader(scanner.remainingString)
-        let nearbyTickets = try scanner.scanAll(Ticket.self, separators: ["\n"], stopAt: [])
+        let nearbyTickets = try mapError(
+			{ () throws(Ticket.ParseError) in try scanner.scanAll(Ticket.self, separators: ["\n"], stopAt: []) },
+			transform: ParseError.notAValidNearbyTicket)
 
         return .init(rules: rules, yourTicket: yourTicket, nearbyTickets: nearbyTickets)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
+		case notAValidFieldRule(FieldRule.ParseError)
         case notAValidYourTicketHeader(String)
+		case notAValidTicket(Ticket.ParseError)
         case notAValidNearbyTicketsHeader(String)
+		case notAValidNearbyTicket(Ticket.ParseError)
     }
 }
 
@@ -166,7 +177,7 @@ extension Day16Year2020.FieldRule: ParseableFromString {
         return "\(ruleName): \(rangesDescription)"
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         let ruleName = try scanner.scanUpToString(":") ?! ParseError.notAValidRuleName(scanner.remainingString)
         _ = try scanner.scanString(": ") ?! ParseError.notAValidSeparator(scanner.remainingString)
         let ranges = try scanner.scanAll(
@@ -177,7 +188,7 @@ extension Day16Year2020.FieldRule: ParseableFromString {
         return .init(ruleName: ruleName, ranges: ranges)
     }
 
-    private static func parseRange(on scanner: Scanner) throws -> ClosedRange<Int> {
+    private static func parseRange(on scanner: Scanner) throws(ParseError) -> ClosedRange<Int> {
         let lowerBound = try scanner.scanInt() ?! ParseError.notAValidLowerBound(scanner.remainingString)
         _ = try scanner.scanString("-") ?! ParseError.notAValidRangeSeparator(scanner.remainingString)
         let upperBound = try scanner.scanInt() ?! ParseError.notAValidUpperBound(scanner.remainingString)
@@ -186,7 +197,7 @@ extension Day16Year2020.FieldRule: ParseableFromString {
         return lowerBound ... upperBound
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case notAValidRuleName(String)
         case notAValidSeparator(String)
         case notAValidLowerBound(String)

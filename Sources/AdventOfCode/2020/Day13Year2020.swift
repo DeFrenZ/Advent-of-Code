@@ -172,7 +172,7 @@ extension Day13Year2020.BusScheduleEntry: ParseableFromString {
         }
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         if scanner.scanString("x") != nil {
             return .notInService
         } else if let id = scanner.scanInt() {
@@ -182,7 +182,7 @@ extension Day13Year2020.BusScheduleEntry: ParseableFromString {
         throw ParseError.notAValidEntry(scanner.remainingString)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case notAValidEntry(String)
     }
 }

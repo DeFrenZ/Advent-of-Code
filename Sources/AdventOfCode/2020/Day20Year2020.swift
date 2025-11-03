@@ -206,7 +206,7 @@ public final class Day20Year2020: DaySolverWithInputs {
 public extension Day20Year2020 {
     struct Tile: Identifiable, Hashable {
         public var id: ID
-        public var imageData: Matrix2<Pixel>
+        public var imageData: ImageData
 
         public enum Pixel: Character {
             case full = "#"
@@ -214,6 +214,7 @@ public extension Day20Year2020 {
         }
 
         public typealias ID = Int
+		public typealias ImageData = Matrix2<Pixel>
     }
 
     typealias InputElement = Tile
@@ -230,20 +231,26 @@ extension Day20Year2020.Tile: ParseableFromString {
         """
     }
 
-    public static func parse(on scanner: Scanner) throws -> Self {
+    public static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         _ = try scanner.scanString("Tile ") ?! ParseError.noTile(scanner.remainingString)
         let id = try scanner.scanInt() ?! ParseError.invalidID(scanner.remainingString)
         _ = try scanner.scanString(":\n") ?! ParseError.noPeriod(scanner.remainingString)
-        let imageRows = try scanner.scanAll([Pixel].self, separators: ["\n"], stopAt: ["\n\n"])
+        let imageRows = try mapError(
+			{ () throws(Pixel.ParseError) in try scanner.scanAll([Pixel].self, separators: ["\n"], stopAt: ["\n\n"]) },
+			transform: ParseError.notAValidPixel)
 
-        let imageData = try Matrix2(imageRows)
+        let imageData = try mapError(
+			{ () throws(ImageData.ValidationError) in try Matrix2(imageRows) },
+			transform: ParseError.notAValidGrid)
         return .init(id: id, imageData: imageData)
     }
 
-    enum ParseError: Error {
+	public enum ParseError: Error {
         case noTile(String)
         case invalidID(String)
         case noPeriod(String)
+		case notAValidPixel(Pixel.ParseError)
+		case notAValidGrid(ImageData.ValidationError)
     }
 }
 
@@ -269,13 +276,13 @@ extension Day20Year2020 {
 }
 
 extension Day20Year2020.Tile {
-    func imageDataPermutations() -> [Transformation: Matrix2<Pixel>] {
+    func imageDataPermutations() -> [Transformation: ImageData] {
         Transformation.allCases
             .map({ ($0, transformedImageData($0)) })
             |> Dictionary.init(uniqueKeysWithValues:)
     }
 
-    func transformedImageData(_ transformation: Transformation) -> Matrix2<Pixel> {
+    func transformedImageData(_ transformation: Transformation) -> ImageData {
         switch (transformation.flipped, transformation.rotation) {
         case (false, .zero): return imageData
         case (false, .one): return imageData.rotatedClockwise()

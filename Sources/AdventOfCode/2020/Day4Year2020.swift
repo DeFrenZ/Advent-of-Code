@@ -226,7 +226,7 @@ extension Day4Year2020.KeyValuePair: ParseableFromString {
         "\(key.rawValue):\(value)"
     }
 
-    static func parse(on scanner: Scanner) throws -> Self {
+    static func parse(on scanner: Scanner) throws(ParseError) -> Self {
         let keyString = try scanner.scanUpToString(":") ?! ParseError.onKey(scanner.remainingString)
         let key = try Key(rawValue: keyString) ?! ParseError.notAValidKey(keyString)
         _ = try scanner.scanString(":") ?! ParseError.onColon(scanner.remainingString)

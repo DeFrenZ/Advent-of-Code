@@ -7,20 +7,20 @@ public struct Matrix2 <Element> {
         self.elementsPerRow = columns
     }
 
-    public init(_ elements: [Element], elementsPerRow columns: Int) throws {
+    public init(_ elements: [Element], elementsPerRow columns: Int) throws(ValidationError) {
         guard columns > 0 else { throw ValidationError.invalidDimension }
         guard elements.count.isMultiple(of: columns) else { throw ValidationError.invalidElementCount }
         self.init(uncheckedElements: elements, columns: columns)
     }
 
-    public init(_ grid: [[Element]]) throws {
+    public init(_ grid: [[Element]]) throws(ValidationError) {
         guard let columns = grid.first?.count else { throw ValidationError.empty }
         guard grid.map(\.count).allSatisfy({ $0 == columns }) else { throw ValidationError.notGridShaped }
         let elements = grid.flattened()
         try self.init(elements, elementsPerRow: columns)
     }
 
-    enum ValidationError: Error {
+    public enum ValidationError: Error {
         case invalidDimension
         case invalidElementCount
         case notGridShaped
