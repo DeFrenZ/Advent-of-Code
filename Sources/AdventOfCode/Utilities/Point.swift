@@ -18,6 +18,8 @@ extension Point2: Hashable where T: Hashable {
     }
 }
 
+extension Point2: Sendable where T: Sendable {}
+
 extension Point2 where T: AdditiveArithmetic {
     public static var zero: Self { .init(x: .zero, y: .zero) }
 }
@@ -43,6 +45,8 @@ extension Point3: Hashable where T: Hashable {
         hasher.combine(z)
     }
 }
+
+extension Point3: Sendable where T: Sendable {}
 
 extension Point3 where T: AdditiveArithmetic {
     public static var zero: Self { .init(x: .zero, y: .zero, z: .zero) }
@@ -71,6 +75,8 @@ extension Point4: Hashable where T: Hashable {
         hasher.combine(w)
     }
 }
+
+extension Point4: Sendable where T: Sendable {}
 
 extension Point4 where T: AdditiveArithmetic {
     public static var zero: Self { .init(x: .zero, y: .zero, z: .zero, w: .zero) }

@@ -332,7 +332,7 @@ extension Day4Year2020.InputElement {
     }
 
     public enum ValidationError: Error {
-        case missingKey(PartialKeyPath<Passport>)
+        case missingKey(PartialKeyPath<Passport> & Sendable)
         case year(YearError)
         case length(LengthError)
         case rgbColor(RGBColorError)

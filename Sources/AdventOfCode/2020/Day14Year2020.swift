@@ -147,7 +147,7 @@ public extension Day14Year2020 {
         case updateMask(Bitmask)
         case writeToMemory(address: Int, value: Int)
 
-        public enum Bit: Character {
+        public enum Bit: Character, Sendable {
             case setOne = "1"
             case setZero = "0"
             case dontChange = "X"

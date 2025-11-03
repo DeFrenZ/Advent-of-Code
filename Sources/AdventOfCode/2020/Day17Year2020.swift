@@ -439,7 +439,7 @@ public extension Day17Year2020 {
     }
 
     typealias InputElement = [CubeState]
-    typealias PocketDimensionState<Index: Hashable> = [Index: Void]
+    typealias PocketDimensionState<Index: Hashable & Sendable> = [Index: Void]
 }
 
 extension Day17Year2020.CubeState: ParseableFromString {}
