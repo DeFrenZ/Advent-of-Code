@@ -22,10 +22,15 @@ let package = Package(
 				.product(name: "SE0288_IsPower", package: "swift-se0288-is-power"),
                 .product(name: "SwiftGraph", package: "SwiftGraph"),
             ]),
+		.target(
+			name: "AdventOfCodeInputs",
+			resources: [
+				.process("Resources"),
+			]),
         .testTarget(
             name: "AdventOfCodeTests",
-            dependencies: ["AdventOfCode"],
-            resources: [
-                .process("Input"),
-            ]),
+            dependencies: [
+				"AdventOfCode",
+				"AdventOfCodeInputs",
+			]),
     ])

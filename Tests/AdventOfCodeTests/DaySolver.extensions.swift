@@ -1,6 +1,6 @@
 import Testing
-import class Foundation.Bundle
 import AdventOfCode
+import AdventOfCodeInputs
 
 extension DaySolver {
 	static func testSolutions(
@@ -35,8 +35,6 @@ extension DaySolver {
 	}
 
 	private static func puzzleInput() -> String {
-		let inputURL = Bundle.module.url(forResource: "\(year)-\(day)", withExtension: "txt")!
-		let input = try! String(contentsOf: inputURL, encoding: .utf8)
-		return input
+		try! Inputs.puzzleInput(year: year, day: day)
 	}
 }
