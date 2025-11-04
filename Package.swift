@@ -17,11 +17,16 @@ let package = Package(
         .target(
             name: "AdventOfCode",
             dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
 				.product(name: "SE0288_IsPower", package: "swift-se0288-is-power"),
                 .product(name: "SwiftGraph", package: "SwiftGraph"),
             ]),
+		.executableTarget(
+			name: "AdventOfCodeExe",
+			dependencies: [
+				"AdventOfCode",
+				.product(name: "ArgumentParser", package: "swift-argument-parser"),
+			]),
 		.target(
 			name: "AdventOfCodeInputs",
 			resources: [
