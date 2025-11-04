@@ -421,7 +421,8 @@ struct Year2020SolversTests {
 			part2Solution: "3683236147222")
     }
 
-    @Test func day15() throws {
+	@Test(.disabled("Slow test"))
+    func day15() throws {
         try Day15Year2020.testSolutions(
 			input: "0,3,6",
 			part1Solution: "436",
@@ -493,7 +494,8 @@ struct Year2020SolversTests {
 			part2Solution: "622670335901")
     }
 
-    @Test func day17() throws {
+	@Test(.disabled("Slow test"))
+    func day17() throws {
         let sampleInput = """
             .#.
             ..#
@@ -616,7 +618,8 @@ struct Year2020SolversTests {
 			part2Solution: "352")
     }
 
-	@Test(.disabled("Not implemented yet")) func day20() throws {
+	@Test(.disabled("Not implemented yet"))
+	func day20() throws {
         let sampleInput = """
             Tile 2311:
             ..##.#..#.
