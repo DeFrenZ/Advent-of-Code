@@ -12,6 +12,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.1"),
 		.package(url: "https://github.com/apple/swift-se0288-is-power", from: "2.0.0"),
         .package(url: "https://github.com/davecom/SwiftGraph", from: "3.1.0"),
+		.package(url: "https://github.com/ordo-one/package-benchmark", from: "1.29.6"),
     ],
     targets: [
         .target(
@@ -38,4 +39,15 @@ let package = Package(
 				"AdventOfCode",
 				"AdventOfCodeInputs",
 			]),
+		.executableTarget(
+			name: "AdventOfCodeBenchmarks",
+			dependencies: [
+				"AdventOfCode",
+				"AdventOfCodeInputs",
+				.product(name: "Benchmark", package: "package-benchmark"),
+			],
+			path: "Benchmarks/AdventOfCodeBenchmarks",
+			plugins: [
+				.plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
+			])
     ])

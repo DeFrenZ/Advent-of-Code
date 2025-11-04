@@ -1,3 +1,5 @@
+import Algorithms
+
 public protocol DaySolver {
     init(input: String) throws
     static var day: Int { get }
@@ -6,7 +8,7 @@ public protocol DaySolver {
     func solvePart2() -> String
 }
 
-func daySolverType(year: Int, day: Int) throws -> DaySolver.Type {
+public func daySolverType(year: Int, day: Int) throws -> DaySolver.Type {
     switch (year, day) {
     case (2018,  1): return Day1Year2018.self
     case (2018,  2): return Day2Year2018.self
@@ -35,8 +37,14 @@ func daySolverType(year: Int, day: Int) throws -> DaySolver.Type {
 	case (2020, 18): return Day18Year2020.self
 	case (2020, 19): return Day19Year2020.self
 	case (2020, 20): return Day20Year2020.self
+	case (2024,  1): return Day1Year2024.self
     default: throw DaySolverError.unsolvedDay(year: year, day: day)
     }
+}
+
+public func allDaySolvers() -> [DaySolver.Type] {
+	product(2015 ... 2025, 1 ... 25)
+		.compactMap({ year, day in try? daySolverType(year: year, day: day) })
 }
 
 enum DaySolverError: Swift.Error {

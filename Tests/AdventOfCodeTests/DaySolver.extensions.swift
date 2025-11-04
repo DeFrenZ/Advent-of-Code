@@ -28,12 +28,6 @@ extension DaySolver {
 		}
 	}
 
-	static func computeSolutions() throws {
-		let solver = try Self.init(input: puzzleInput())
-		_ = solver.solvePart1()
-		_ = solver.solvePart2()
-	}
-
 	private static func puzzleInput() -> String {
 		try! Inputs.puzzleInput(year: year, day: day)
 	}
