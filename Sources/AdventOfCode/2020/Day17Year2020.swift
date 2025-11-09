@@ -466,14 +466,13 @@ extension Day17Year2020 {
     func cycledStates <Index: Hashable> (
         from initialState: PocketDimensionState<Index>,
         findNeighbors: @escaping (Index, Bool) -> [Index])
-    -> AnySequence<PocketDimensionState<Index>> {
+    -> some Sequence<PocketDimensionState<Index>> {
         sequence(
             state: initialState,
             next: { state in
                 defer { Self.cycleState(&state, findNeighbors: findNeighbors) }
                 return state
             })
-            .eraseToAnySequence()
     }
 
     static func neighbors(of index: Point3<Int>, includeIndex: Bool) -> [Point3<Int>] {

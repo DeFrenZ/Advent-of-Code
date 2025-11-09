@@ -61,34 +61,33 @@ extension Matrix2 {
 // MARK: - Slices
 
 extension Matrix2 {
-    public var rows: AnySequence<ArraySlice<Element>> {
+	// Ideally the inner type is still an opaque `some` but currently not possible in the language (or I don't know how)
+    public var rows: some Collection<AnyCollection<Element>> {
         validRowIndices
             .lazy
-            .map(row(atIndex:))
-            .eraseToAnySequence()
+			.map({ row(atIndex: $0).eraseToAnyCollection() })
     }
 
-    public func row(atIndex index: RowIndex) -> ArraySlice<Element> {
+    public func row(atIndex index: RowIndex) -> some Collection<Element> {
         let startIndex = self.index((row: index, column: 0)).rawValue
         let endIndex = elements.index(startIndex, offsetBy: elementsPerRow)
         return elements[startIndex ..< endIndex]
     }
 
-    public var columns: AnySequence<AnySequence<Element>> {
+	// Ideally the inner type is still an opaque `some` but currently not possible in the language (or I don't know how)
+    public var columns: some Collection<AnyCollection<Element>> {
         validColumnIndices
             .lazy
-            .map(column(atIndex:))
-            .eraseToAnySequence()
+			.map({ column(atIndex: $0).eraseToAnyCollection() })
     }
 
-    public func column(atIndex index: ColumnIndex) -> AnySequence<Element> {
+    public func column(atIndex index: ColumnIndex) -> some Collection<Element> {
         let indices = validRowIndices
             .map({ (row: $0, column: index) })
             .map(self.index)
             .map(\.rawValue)
         let rangeSet = RangeSet(indices, within: elements)
         return elements[rangeSet]
-            .eraseToAnySequence()
     }
 }
 

@@ -206,7 +206,7 @@ extension Day8Year2020.Program {
         }
     }
 
-    func tentativeReparations() -> AnySequence<Self> {
+    func tentativeReparations() -> some Sequence<Self> {
         indices
             .lazy
             .compactMap({ index in
@@ -219,6 +219,5 @@ extension Day8Year2020.Program {
                     return updated(self) { $0[index].operation = .jump }
                 }
             })
-            .eraseToAnySequence()
     }
 }

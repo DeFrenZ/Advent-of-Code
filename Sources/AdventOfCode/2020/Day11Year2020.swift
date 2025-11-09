@@ -320,7 +320,7 @@ extension Matrix2 where Element == Day11Year2020.SeatState {
             .compactMap({ neighbourIndex(from: center, inDirection: $0, rule: rule) })
     }
 
-    func indices(from center: Index, inDirection direction: (x: Int, y: Int)) -> AnySequence<Index> {
+    func indices(from center: Index, inDirection direction: (x: Int, y: Int)) -> some Sequence<Index> {
         let rows = validRowIndices
         let columns = validColumnIndices
         return sequence(state: position(for: center), next: { position in
@@ -328,7 +328,7 @@ extension Matrix2 where Element == Day11Year2020.SeatState {
             position.row += direction.y
             guard columns.contains(position.column), rows.contains(position.row) else { return nil }
             return index(position)
-        }).eraseToAnySequence()
+        })
     }
 
     func neighbourIndex(
