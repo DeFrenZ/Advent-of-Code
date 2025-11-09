@@ -213,6 +213,14 @@ extension Range where Bound: Strideable {
     }
 }
 
+// MARK: - Regex
+
+/// - SeeAlso: https://stackoverflow.com/a/75079387
+public func ~=(regex: Regex<Substring>, string: some StringProtocol) -> Bool {
+	(try? regex.wholeMatch(in: string.toString())) != nil
+}
+
+
 // MARK: - Sequence
 
 extension Sequence where Element: AdditiveArithmetic {
@@ -354,4 +362,12 @@ extension Sequence where Element: BinaryInteger, Element: SignedNumeric {
     public func lcm() -> Element? {
         reduce(Element.lcm)
     }
+}
+
+// MARK: - Substring
+
+extension StringProtocol {
+	public func toString() -> String {
+		.init(self)
+	}
 }
