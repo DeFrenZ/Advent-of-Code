@@ -320,26 +320,6 @@ extension Sequence {
     }
 }
 
-extension Sequence {
-    public func withPrevious() -> AnySequence<(current: Element, previous: Element)> {
-        var iterator = makeIterator()
-        guard let first = iterator.next() else { return [].eraseToAnySequence() }
-        return sequence(state: (iterator: iterator, current: first), next: { state in
-            guard let next = iterator.next() else { return nil }
-            let previous = state.current
-            state.current = next
-            return (next, previous)
-        }).eraseToAnySequence()
-    }
-
-    public func withNext() -> AnySequence<(current: Element, next: Element)> {
-        withPrevious()
-            .lazy
-            .map({ ($1, $0) })
-            .eraseToAnySequence()
-    }
-}
-
 extension Sequence where Element: Equatable {
     public func count(occurrencesOf element: Element) -> Int {
         count(where: { $0 == element })

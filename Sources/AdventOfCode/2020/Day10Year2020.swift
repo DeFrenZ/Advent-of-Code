@@ -197,8 +197,8 @@ private extension Day10Year2020 {
     func joltageDifferences() -> [Int] {
         let joltages = Self.sortedAdaptersIncludingOutletAndBuiltIn(inputElements)
         return joltages
-            .withPrevious()
-            .map({ $0.rawValue - $1.rawValue })
+			.adjacentPairs()
+            .map({ $1.rawValue - $0.rawValue })
     }
 
     func joltageDifferencesDistribution() -> [Int: Int] {
@@ -225,7 +225,7 @@ private extension Day10Year2020 {
     static func countOfPaths(in graph: UnweightedGraph<Adapter>) -> Int {
         let checkpoints = self.checkpoints(in: graph)
         let pathsCounts = checkpoints
-            .withNext()
+			.adjacentPairs()
             .map({ graph.allPaths(from: $0, to: $1).count })
         return pathsCounts.product()
     }

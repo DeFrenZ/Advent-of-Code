@@ -295,9 +295,9 @@ extension Day11Year2020 {
             defer { state.updateLayout(rule: rule, neighbourIndices: neighbours) }
             return state
         })
-        return seatLayoutUpdates.withPrevious()
-            .first(where: { $0.current == $0.previous })!
-            .current
+        return seatLayoutUpdates.adjacentPairs()
+            .first(where: { $0.0 == $0.1 })!
+            .1
     }
 
     enum NeighbourRule {

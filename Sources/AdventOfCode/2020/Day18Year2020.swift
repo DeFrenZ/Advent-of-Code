@@ -117,7 +117,7 @@ public extension Day18Year2020 {
 
 extension Day18Year2020.RawExpression: ParseableFromString {
     public var description: String {
-        tokens.withNext()
+        tokens.adjacentPairs()
             .map({ lhs, rhs in
                 switch (lhs, rhs) {
                 case (.openParenthesis, _), (_, .closedParenthesis):
