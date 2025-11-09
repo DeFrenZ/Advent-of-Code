@@ -53,4 +53,27 @@ struct Year2024SolversTests {
 			part1Solution: "314",
 			part2Solution: "373")
 	}
+
+	@Test func day3() throws {
+		try Day3Year2024.testSolutions(input: "mul(44,46)", part1Solution: "2024")
+		try Day3Year2024.testSolutions(input: "mul(123,4)", part1Solution: "492")
+		try Day3Year2024.testSolutions(input: "mul(4*", part1Solution: "0")
+		try Day3Year2024.testSolutions(input: "mul(6,9!", part1Solution: "0")
+		try Day3Year2024.testSolutions(input: "?(12,34)", part1Solution: "0")
+		try Day3Year2024.testSolutions(input: "mul ( 2 , 4 )", part1Solution: "0")
+
+		let sampleInput = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"
+		try Day3Year2024.testSolutions(
+			input: sampleInput,
+			part1Solution: "161")
+
+		let sampleInput2 = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+		try Day3Year2024.testSolutions(
+			input: sampleInput2,
+			part2Solution: "48")
+
+		try Day3Year2024.testSolutions(
+			part1Solution: "175015740",
+			part2Solution: "112272912")
+	}
 }
