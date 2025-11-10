@@ -82,4 +82,27 @@ struct Year2024SolversTests {
 			part1Solution: "175015740",
 			part2Solution: "112272912")
 	}
+
+	@Test func day4() throws {
+		typealias SUT = Day4Year2024
+
+		let sampleInput = """
+			MMMSXXMASM
+			MSAMXMSMSA
+			AMXSXMAAMM
+			MSAMASMSMX
+			XMASAMXAMM
+			XXAMMXXAMA
+			SMSMSASXSS
+			SAXAMASAAA
+			MAMMMXMMMM
+			MXMXAXMASX
+			"""
+		try SUT.testSolutions(
+			input: sampleInput,
+			part1Solution: "18")
+
+		try SUT.testSolutions(
+			part1Solution: "2496")
+	}
 }

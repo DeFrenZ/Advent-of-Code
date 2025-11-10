@@ -166,16 +166,30 @@ extension Matrix2: RandomAccessCollection, MutableCollection {
         set { self.elements[position.rawValue] = newValue }
     }
 
-    public struct Index: Hashable, Comparable {
+    public struct Index: Hashable {
         fileprivate var rawValue: Storage.Index
         fileprivate init(_ rawValue: Storage.Index) {
             self.rawValue = rawValue
         }
-
-        public static func < (lhs: Self, rhs: Self) -> Bool {
-            lhs.rawValue < rhs.rawValue
-        }
     }
+}
+
+extension Matrix2.Index: Comparable {
+	public static func < (lhs: Self, rhs: Self) -> Bool {
+		lhs.rawValue < rhs.rawValue
+	}
+}
+
+extension Matrix2.Index: Strideable {
+	public typealias Stride = [Element].Index.Stride
+
+	public func distance(to other: Matrix2<Element>.Index) -> Stride {
+		rawValue.distance(to: other.rawValue)
+	}
+
+	public func advanced(by n: Stride) -> Matrix2<Element>.Index {
+		.init(rawValue.advanced(by: n))
+	}
 }
 
 extension Matrix2 {
