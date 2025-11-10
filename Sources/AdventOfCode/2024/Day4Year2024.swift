@@ -2,7 +2,7 @@ public final class Day4Year2024: DaySolver {
 	public static let day: Int = 4
 	public static let year: Int = 2024
 
-	public var input: Input
+	private let input: Input
 
 	public init(input: Input) {
 		self.input = input
@@ -97,7 +97,11 @@ public final class Day4Year2024: DaySolver {
 	 Flip the word search from the instructions back over to the word search side and try again. **How many times does an `X-MAS` appear?**
 	 */
 	public func solvePart2() -> String {
-		"not implemented"
+		let intersectionCharacter = "A".utf8.first!
+		return indices(of: intersectionCharacter)
+			.filter({ isCrossMASMatch(at: $0) })
+			.count
+			.description
 	}
 }
 
@@ -133,11 +137,9 @@ extension Day4Year2024 {
 	}
 
 	func matches(of word: String, at index: Input.Index) -> Int {
-		let result = Direction.allCases
+		Direction.allCases
 			.map({ isMatch(of: word, at: index, in: $0) })
 			.count(where: \.self)
-//		print("\(word) at \(index) matches \(result)")
-		return result
 	}
 
 	func isMatch(of word: String, at index: Input.Index, in direction: Direction) -> Bool {
@@ -145,25 +147,39 @@ extension Day4Year2024 {
 		let characters = positions(from: index, in: direction)
 			.lazy
 			.map({ [input] in input[$0] })
-		let isMatch = zip(word.utf8, characters).allSatisfy(==)
-//		print("\(word) at \(index) in \(direction) \(isMatch ? "matches" : "doesn't match")")
-		return isMatch
+		return zip(word.utf8, characters).allSatisfy(==)
 	}
 
 	func couldFitMatch(of word: String, at index: Input.Index, in direction: Direction) -> Bool {
-		let wordLength = word.utf8.count
+		hasCharacters(count: word.utf8.count, from: index, in: direction)
+	}
+
+	func hasCharacters(count: Int, from index: Input.Index, in direction: Direction) -> Bool {
 		let positions = positions(from: index, in: direction)
-		guard let lastPosition = positions.element(atOffset: wordLength - 1) else { return false }
-		let fits = input.validRowIndices.contains(lastPosition.row)
-			&& input.validColumnIndices.contains(lastPosition.column)
-//		print("\(word) at \(index) \(fits ? "fits" : "doesn't fit") in \(direction)")
-		return fits
+		guard let lastPosition = positions.element(atOffset: count - 1) else { return false }
+		return input.isValidPosition(lastPosition)
 	}
 
 	func positions(from index: Input.Index, in direction: Direction) -> some Sequence<Input.Position> {
 		sequence(
 			first: input.position(for: index),
 			next: { [input] in input.nextPosition(from: $0, in: direction) })
+	}
+
+	func isCrossMASMatch(at index: Input.Index) -> Bool {
+		let centerPosition = input.position(for: index)
+		let matches = Direction.allCases
+			.filter(\.isDiagonal)
+			.filter({ offsetDirection in
+				let wordStartPosition = input.nextPosition(from: centerPosition, in: offsetDirection)
+				return input.isValidPosition(wordStartPosition)
+					&& isMatch(
+						of: "MAS",
+						at: input.index(wordStartPosition),
+						in: offsetDirection.opposite)
+			})
+		let orthogonals = matches.flatMap(\.orthogonals)
+		return matches.contains(where: orthogonals.contains)
 	}
 
 	enum Direction: CaseIterable {
@@ -197,6 +213,41 @@ extension Matrix2 {
 			return (row: position.row - 1, column: position.column)
 		case .upRight:
 			return (row: position.row - 1, column: position.column + 1)
+		}
+	}
+}
+
+extension Day4Year2024.Direction {
+	var isDiagonal: Bool {
+		switch self {
+		case .right, .down, .left, .up: return false
+		case .downRight, .downLeft, .upLeft, .upRight: return true
+		}
+	}
+
+	var opposite: Self {
+		switch self {
+		case .right: return .left
+		case .downRight: return .upLeft
+		case .down: return .up
+		case .downLeft: return .upRight
+		case .left: return .right
+		case .upLeft: return .downRight
+		case .up: return .down
+		case .upRight: return .downLeft
+		}
+	}
+
+	var orthogonals: Set<Self> {
+		switch self {
+		case .right: return [.up, .down]
+		case .downRight: return [.upRight, .downLeft]
+		case .down: return [.right, .left]
+		case .downLeft: return [.downRight, .upLeft]
+		case .left: return [.down, .up]
+		case .upLeft: return [.downLeft, .upRight]
+		case .up: return [.left, .right]
+		case .upRight: return [.upLeft, .downRight]
 		}
 	}
 }

@@ -100,9 +100,11 @@ struct Year2024SolversTests {
 			"""
 		try SUT.testSolutions(
 			input: sampleInput,
-			part1Solution: "18")
+			part1Solution: "18",
+			part2Solution: "9")
 
 		try SUT.testSolutions(
-			part1Solution: "2496")
+			part1Solution: "2496",
+			part2Solution: "1967")
 	}
 }

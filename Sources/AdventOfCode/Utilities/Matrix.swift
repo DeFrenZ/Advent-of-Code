@@ -40,6 +40,11 @@ extension Matrix2 {
     var validRowIndices: Range<RowIndex> { 0 ..< elementsPerColumn }
     var validColumnIndices: Range<ColumnIndex> { 0 ..< elementsPerRow }
 
+	func isValidPosition(_ position: Position) -> Bool {
+		validRowIndices.contains(position.row)
+			&& validColumnIndices.contains(position.column)
+	}
+
     func index(_ position: Position) -> Index {
         .init(position.row * elementsPerRow + position.column)
     }
